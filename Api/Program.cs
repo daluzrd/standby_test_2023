@@ -2,16 +2,17 @@ using System.Text.Encodings.Web;
 using System.Text.Json.Serialization;
 using System.Text.Unicode;
 using Api.Configuration;
+using Infrastructure.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SharedKernel.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// builder.Services.AddCorsConfiguration(builder.Configuration);
-
-builder.Services.AddJwtConfiguration(builder.Configuration);
+builder.Services.AddCorsConfiguration(builder.Configuration);
 
 builder.Services.AddDataBaseConfig(builder.Configuration);
+
+builder.Services.AddIdentityConfiguration(builder.Configuration);
 
 builder.Services.RegisterDI();
 
@@ -40,13 +41,13 @@ var app = builder.Build();
 
 app.UseHttpsRedirection();
 
-// app.UseCorsConfig();
+app.UseCorsConfig();
 
 app.UseSwaggerConf(app.Environment);
 
 app.UseApiConfig(app.Environment);
 
-app.UseJwtAuthentication();
+app.UseIdentityConfiguration();
 
 app.MapControllers();
 

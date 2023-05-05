@@ -1,29 +1,28 @@
 using FluentValidation.Results;
 
-namespace SharedKernel.Validators
+namespace SharedKernel.Validators;
+
+public class ResultValidator
 {
-    public class ResultValidator
+    private ValidationResult ValidationResult { get; }
+
+    public ResultValidator(ValidationResult validationResult)
     {
-        private ValidationResult ValidationResult { get; }
+        ValidationResult = validationResult;
+    }
 
-        public ResultValidator(ValidationResult validationResult)
+    public bool IsValid()
+    {
+        return ValidationResult.IsValid;
+    }
+
+    public List<string> GetErrorMessages()
+    {
+        if (!ValidationResult.Errors.Any())
         {
-            ValidationResult = validationResult;
+            return new List<string>();
         }
 
-        public bool IsValid()
-        {
-            return ValidationResult.IsValid;
-        }
-
-        public List<string> GetErrorMessages()
-        {
-            if (!ValidationResult.Errors.Any())
-            {
-                return new List<string>();
-            }
-
-            return ValidationResult.Errors.Select(x => x.ErrorMessage).ToList();
-        }
+        return ValidationResult.Errors.Select(x => x.ErrorMessage).ToList();
     }
 }

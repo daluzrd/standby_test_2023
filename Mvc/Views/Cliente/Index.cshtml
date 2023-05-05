@@ -1,0 +1,75 @@
+﻿@model IEnumerable<Mvc.Models.Cliente.ClienteViewModel>
+
+@{
+    ViewData["Title"] = "Clientes";
+}
+
+<h1>Clientes</h1>
+
+<p>
+    @Html.ActionLink("Novo", "CreateOrEdit", "Cliente", null , new { @class="btn btn-primary" })
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Nome)
+            </th>
+            <th>Cpf/Cnpj</th>
+            <th>
+                @Html.DisplayNameFor(model => model.Ativo)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (!Model.Any())
+        {
+            <tr>
+                <td>Não há clientes cadastrados</td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        }
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nome)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CpfCnpj)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Ativo)
+                </td>
+                <td>
+                    <a asp-action="CreateOrEdit" asp-controller="Cliente" asp-route-id="@item.Id" class="btn btn-success btn-sm">Editar</a>
+                    <button class="btn btn-danger btn-sm" type="button" onclick="deleteCliente('@item.Id')">Excluir</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts
+    {
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+    <script>
+        function deleteCliente(id) {
+            $.ajax({
+                url: `/Cliente?id=${id}`,
+                type: 'DELETE',
+                success: function () {
+                    location.reload()
+                },
+                error: function (e) {
+                    alert(e.responseText)
+                }
+            })
+        }
+    </script>
+}

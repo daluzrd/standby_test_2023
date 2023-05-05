@@ -1,0 +1,9 @@
+﻿.home__content {
+    height: 100%;
+}
+
+.home__welcome-text {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

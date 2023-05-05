@@ -4,135 +4,136 @@ using Application.Queries.Clientes.GetById;
 using Application.UseCase.Clientes.Create;
 using Application.UseCase.Clientes.Delete;
 using Application.UseCase.Clientes.Update;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SharedKernel.MediatR;
 
-namespace Api.Controllers
+namespace Api.Controllers;
+
+[Authorize]
+[ApiController]
+[Route("api/[controller]")]
+public class ClienteController : ControllerBase
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class ClienteController : ControllerBase
+    private readonly IMediatorHandler _mediator;
+    public ClienteController(IMediatorHandler mediator)
     {
-        private readonly IMediatorHandler _mediator;
-        public ClienteController(IMediatorHandler mediator)
+        _mediator = mediator;
+    }
+
+    [HttpGet()]
+    public async Task<IActionResult> Get()
+    {
+        try
         {
-            _mediator = mediator;
+            var getClienteQueryInput = new GetClienteQueryInput();
+            var result = await _mediator.SendQuery(getClienteQueryInput);
+
+            return Ok(result);
         }
-
-        [HttpGet()]
-        public async Task<IActionResult> Get([FromQuery] string? nome, string? cpfCnpj, bool? ativo, string? orderBy, bool? orderAsc)
+        catch (ArgumentException e)
         {
-            try
-            {
-                var getClienteQueryInput = new GetClienteQueryInput(nome, cpfCnpj, ativo,orderBy, orderAsc);
-                var result = await _mediator.SendQuery(getClienteQueryInput);
-
-                return Ok(result);
-            }
-            catch (ArgumentException e)
-            {
-                return BadRequest(e.Message);
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, e.Message);
-            }
+            return BadRequest(e.Message);
         }
-
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(Guid id)
+        catch (Exception e)
         {
-            try
-            {
-                var getClienteQueryInput = new GetClienteByIdQueryInput(id);
-                var result = await _mediator.SendQuery(getClienteQueryInput);
-
-                return Ok(result);
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, e.Message);
-            }
+            return StatusCode(500, e.Message);
         }
+    }
 
-        [HttpPost()]
-        public async Task<IActionResult> Post([FromBody] CreateClienteDto createCustomerDto)
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetById(Guid id)
+    {
+        try
         {
-            try
-            {
-                var createClienteCommand = new CreateClienteCommand(createCustomerDto.CpfCnpj, createCustomerDto.Nome);
+            var getClienteQueryInput = new GetClienteByIdQueryInput(id);
+            var result = await _mediator.SendQuery(getClienteQueryInput);
 
-                var result = await _mediator.SendCommand(createClienteCommand);
-                if (!result.Success)
-                {
-                    return BadRequest(result);
-                }
-
-                return Ok(result);
-            }
-            catch (ArgumentException e)
-            {
-                return BadRequest(e.Message);
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, e.Message);
-            }
+            return Ok(result);
         }
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Put(Guid id, [FromBody] UpdateClienteDto updateClienteDto)
+        catch (Exception e)
         {
-            try
-            {
-                var updateClienteCommand = new UpdateClienteCommand(
-                    id,
-                    updateClienteDto.CpfCnpj,
-                    updateClienteDto.Nome,
-                    updateClienteDto.Ativo);
-
-
-                var result = await _mediator.SendCommand(updateClienteCommand);
-                if (!result.Success)
-                {
-                    return BadRequest(result);
-                }
-
-                return Ok();
-            }
-            catch (ArgumentException e)
-            {
-                return BadRequest(e.Message);
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, e.Message);
-            }
+            return StatusCode(500, e.Message);
         }
+    }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(Guid id)
+    [HttpPost()]
+    public async Task<IActionResult> Post([FromBody] CreateClienteDto createCustomerDto)
+    {
+        try
         {
-            try
-            {
-                var deleteClienteCommand = new DeleteClienteCommand(id);
+            var createClienteCommand = new CreateClienteCommand(createCustomerDto.CpfCnpj, createCustomerDto.Nome);
 
-                var result = await _mediator.SendCommand(deleteClienteCommand);
-                if (!result.Success)
-                {
-                    return BadRequest(result);
-                }
+            var result = await _mediator.SendCommand(createClienteCommand);
+            if (!result.Success)
+            {
+                return BadRequest(result);
+            }
 
-                return NoContent();
-            }
-            catch (ArgumentException e)
+            return Ok(result);
+        }
+        catch (ArgumentException e)
+        {
+            return BadRequest(e.Message);
+        }
+        catch (Exception e)
+        {
+            return StatusCode(500, e.Message);
+        }
+    }
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Put(Guid id, [FromBody] UpdateClienteDto updateClienteDto)
+    {
+        try
+        {
+            var updateClienteCommand = new UpdateClienteCommand(
+                id,
+                updateClienteDto.CpfCnpj,
+                updateClienteDto.Nome,
+                updateClienteDto.Ativo);
+
+
+            var result = await _mediator.SendCommand(updateClienteCommand);
+            if (!result.Success)
             {
-                return BadRequest(e.Message);
+                return BadRequest(result);
             }
-            catch (Exception e)
+
+            return Ok(result);
+        }
+        catch (ArgumentException e)
+        {
+            return BadRequest(e.Message);
+        }
+        catch (Exception e)
+        {
+            return StatusCode(500, e.Message);
+        }
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(Guid id)
+    {
+        try
+        {
+            var deleteClienteCommand = new DeleteClienteCommand(id);
+
+            var result = await _mediator.SendCommand(deleteClienteCommand);
+            if (!result.Success)
             {
-                return StatusCode(500, e.Message);
+                return BadRequest(result);
             }
+
+            return NoContent();
+        }
+        catch (ArgumentException e)
+        {
+            return BadRequest(e.Message);
+        }
+        catch (Exception e)
+        {
+            return StatusCode(500, e.Message);
         }
     }
 }

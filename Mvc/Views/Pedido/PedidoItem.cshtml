@@ -1,0 +1,88 @@
+﻿@model IEnumerable<Mvc.Models.Pedido.GetPedidoItemByPedidoIdViewModel>
+
+@{
+    ViewData["Title"] = "PedidoItem";
+}
+
+<h1>Itens do pedido</h1>
+
+<p>
+    @Html.ActionLink("Novo", "CreateItem", "Pedido", new { id = (Guid)ViewBag.PedidoId } , new { @class="btn btn-primary" })
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Produto</th>
+            <th>Quantidade</th>
+            <th>
+                @Html.DisplayNameFor(model => model.ValorUnitario)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ValorTotal)
+            </th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (!Model.Any())
+        {
+            <tr>
+                <td>Não há pedidos cadastrados</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        }
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Produto.Descricao)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Quantidade)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ValorUnitario)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ValorTotal)
+                </td>
+                <td>
+                    @Html.ActionLink("Editar", "EditItem", "Pedido", new { id = item.Id } , new { @class="btn btn-success btn-sm" })
+                    <button class="btn btn-danger btn-sm" type="button" onclick="deletePedidoItem('@item.Id')">Excluir</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts
+    {
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+    <script>
+        const appHost = window.location.host;
+        const appProtocol = window.location.protocol
+        const pathArray = window.location.pathname.split('/');
+        const context = pathArray[1];
+
+        const contextUrl = appProtocol + "//" + appHost + "/PedidoItem";
+
+        function deletePedidoItem(id) {
+            const url = contextUrl + `/${id}`
+            $.ajax({
+                url: url,
+                type: 'DELETE',
+                success: function () {
+                    location.reload()
+                },
+                error: function (e) {
+                    alert(e.responseText)
+                }
+            })
+        }
+    </script>
+}

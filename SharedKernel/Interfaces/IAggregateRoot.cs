@@ -1,7 +1,6 @@
-namespace SharedKernel.Interfaces
-{
-    public interface IAggregateRoot
-    {
+namespace SharedKernel.Interfaces;
 
-    }
+public interface IAggregateRoot
+{
+
 }

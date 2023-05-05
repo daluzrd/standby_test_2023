@@ -1,7 +1,6 @@
-namespace SharedKernel.Queries
-{
-    public abstract class QueryResult
-    {
+namespace SharedKernel.Queries;
 
-    }
+public abstract class QueryResult
+{
+
 }

@@ -1,21 +1,20 @@
 using SharedKernel.Interfaces;
 using SharedKernel.Queries;
 
-namespace Application.Queries.Clientes.GetById
+namespace Application.Queries.Clientes.GetById;
+
+public class GetClienteByIdQueryHandler : IQuerySingleHandler<GetClienteByIdQueryInput, GetClienteByIdViewModel>
 {
-    public class GetClienteByIdQueryHandler : IQuerySingleHandler<GetClienteByIdQueryInput, GetClienteByIdViewModel>
+    private readonly IReadRepository<GetClienteByIdViewModel> _readRepository;
+
+    public GetClienteByIdQueryHandler(IReadRepository<GetClienteByIdViewModel> readRepository)
     {
-        private readonly IReadRepository<GetClienteByIdViewModel> _clienteReadRepository;
+        _readRepository = readRepository;
+    }
 
-        public GetClienteByIdQueryHandler(IReadRepository<GetClienteByIdViewModel> clienteReadRepository)
-        {
-            _clienteReadRepository = clienteReadRepository;
-        }
-
-        public async Task<GetClienteByIdViewModel> Handle(GetClienteByIdQueryInput request, CancellationToken cancellationToken)
-        {
-            var query = $"select c.Id, c.Nome, c.CpfCnpj, c.Ativo from Cliente c where c.Id = @id";
-            return await _clienteReadRepository.ExecuteQueryFirstOrDefaultAsync(query, new { id = request.Id });
-        }
+    public async Task<GetClienteByIdViewModel> Handle(GetClienteByIdQueryInput request, CancellationToken cancellationToken)
+    {
+        var query = $"select c.Id, c.Nome, c.CpfCnpj, c.Ativo from Cliente c where c.Id = @id";
+        return await _readRepository.ExecuteQueryFirstOrDefaultAsync(query, new { id = request.Id });
     }
 }

@@ -1,0 +1,62 @@
+﻿@model Mvc.Models.Produto.ProdutoViewModel
+
+@{
+    ViewData["Title"] = Model.Id == Guid.Empty ? "Criar" : "Editar";
+}
+
+@if (Model.Id == Guid.Empty)
+{
+    <h1>Criar</h1>
+}
+else
+{
+    <h1>Editar</h1>
+}
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="CreateOrEdit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input asp-for="Id" class="form-control" type="hidden" />
+            <div class="form-group mb-2">
+                <label asp-for="Codigo" class="control-label">Código</label>
+                <input asp-for="Codigo" class="form-control" />
+                <span asp-validation-for="Codigo" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-2">
+                <label asp-for="Descricao" class="control-label">Descrição</label>
+                <input asp-for="Descricao" class="form-control" />
+                <span asp-validation-for="Descricao" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-2">
+                <label asp-for="QuantidadeEstoque" class="control-label">Estoque</label>
+                <input asp-for="QuantidadeEstoque" class="form-control" />
+                <span asp-validation-for="QuantidadeEstoque" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-2">
+                <label asp-for="Valor" class="control-label"></label>
+                <input asp-for="Valor" class="form-control" />
+                <span asp-validation-for="Valor" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-2">
+                @if (Model.Id == Guid.Empty)
+                {
+                    <input type="submit" value="Criar" class="btn btn-primary" />
+                }
+                else
+                {
+                    <input type="submit" value="Editar" class="btn btn-primary" />
+                }
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Voltar para a lista</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -3,23 +3,22 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Api", "Api\Api.csproj", "{763E616C-E72B-434B-863B-0011B2AC3A34}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Api", "Api\Api.csproj", "{763E616C-E72B-434B-863B-0011B2AC3A34}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "Application\Application.csproj", "{5131D4DF-1BB1-4B41-86FA-98EDE0B3A62D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application", "Application\Application.csproj", "{5131D4DF-1BB1-4B41-86FA-98EDE0B3A62D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{2344E327-F987-4813-A269-C2CCD70180AB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "Domain\Domain.csproj", "{2344E327-F987-4813-A269-C2CCD70180AB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{19A6FC19-3956-4A05-B31D-E36412820A48}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{19A6FC19-3956-4A05-B31D-E36412820A48}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedKernel", "SharedKernel\SharedKernel.csproj", "{46931E4F-9578-43BD-98CF-97EB3EDEAF25}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharedKernel", "SharedKernel\SharedKernel.csproj", "{46931E4F-9578-43BD-98CF-97EB3EDEAF25}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mvc", "Mvc\Mvc.csproj", "{8B1A435E-2888-4B3E-A122-BB7BC860FA27}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{763E616C-E72B-434B-863B-0011B2AC3A34}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -42,5 +41,12 @@ Global
 		{46931E4F-9578-43BD-98CF-97EB3EDEAF25}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{46931E4F-9578-43BD-98CF-97EB3EDEAF25}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{46931E4F-9578-43BD-98CF-97EB3EDEAF25}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8B1A435E-2888-4B3E-A122-BB7BC860FA27}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8B1A435E-2888-4B3E-A122-BB7BC860FA27}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8B1A435E-2888-4B3E-A122-BB7BC860FA27}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8B1A435E-2888-4B3E-A122-BB7BC860FA27}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 EndGlobal

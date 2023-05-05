@@ -1,0 +1,131 @@
+﻿@model IEnumerable<Mvc.Models.Pedido.PedidoViewModel>
+
+@{
+    ViewData["Title"] = "Pedidos";
+}
+
+<h1>Pedidos</h1>
+
+<p>
+    @Html.ActionLink("Novo", "CreateOrEdit", "Pedido", null , new { @class="btn btn-primary" })
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Cliente
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Data)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Status)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Valor)
+            </th>
+            <th>
+                Última atualização
+            </th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (!Model.Any())
+        {
+            <tr>
+                <td>Não há pedidos cadastrados</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        }
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NomeCliente)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Data)
+                </td>
+                <td>
+                    @if (item.Status == 'A')
+                    {
+                        <span>Aberto</span>
+                    }
+                    else if (item.Status == 'F')
+                    {
+                        <span>Fechado</span>
+                    }
+                    else
+                    {
+                        <span>Cancelado</span>
+                    }
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Valor)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DataAtualizacao)
+                </td>
+                <td>
+                    <a asp-action="CreateOrEdit" asp-controller="Pedido" asp-route-id="@item.Id" class="btn btn-success btn-sm">Editar</a>
+                    @if (item.Status == 'A')
+                    {
+                        <a asp-action="PedidoItem" asp-controller="Pedido" asp-route-id="@item.Id" class="btn btn-info btn-sm">Itens</a>
+                        <button class="btn btn-primary btn-sm" type="button" onclick="closePedido('@item.Id')">Fechar</button>
+                        <button class="btn btn-danger btn-sm" type="button" onclick="cancelPedido('@item.Id')">Cancelar</button>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts
+    {
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+    <script>
+        const appHost = window.location.host;
+        const appProtocol = window.location.protocol
+        const pathArray = window.location.pathname.split('/');
+        const context = pathArray[1];
+
+        const contextUrl = appProtocol + "//" + appHost + "/" + context;
+
+        function closePedido(id) {
+            const url = contextUrl + `/${id}/Close`
+
+            $.ajax({
+                url: url,
+                type: 'PATCH',
+                success: function () {
+                    location.reload()
+                },
+                error: function (e) {
+                    alert(e.responseText)
+                }
+            })
+        }
+
+        function cancelPedido(id) {
+            const url = contextUrl + `/${id}/Cancel`
+
+            $.ajax({
+                url: url,
+                type: 'PATCH',
+                success: function () {
+                    location.reload()
+                },
+                error: function (e) {
+                    alert(e.responseText)
+                }
+            })
+        }
+    </script>
+}

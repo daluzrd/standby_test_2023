@@ -1,0 +1,78 @@
+﻿@model IEnumerable<Mvc.Models.Produto.ProdutoViewModel>
+
+@{
+    ViewData["Title"] = "Produtos";
+}
+
+<h1>Produtos</h1>
+
+<p>
+    @Html.ActionLink("Novo", "CreateOrEdit", "Produto", null , new { @class="btn btn-primary" })
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Código</th>
+            <th>Descrição</th>
+            <th>Quantidade no estoque</th>
+            <th>
+                @Html.DisplayNameFor(model => model.Valor)
+            </th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (!Model.Any())
+        {
+            <tr>
+                <td>Não há produtos cadastrados</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        }
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Codigo)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Descricao)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.QuantidadeEstoque)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Valor)
+                </td>
+                <td>
+                    <a asp-action="CreateOrEdit" asp-controller="Produto" asp-route-id="@item.Id" class="btn btn-success btn-sm">Editar</a>
+                    <button class="btn btn-danger btn-sm" type="button" onclick="deleteProduto('@item.Id')">Excluir</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts
+    {
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+    <script>
+        function deleteProduto(id) {
+            $.ajax({
+                url: `/Produto?id=${id}`,
+                type: 'DELETE',
+                success: function () {
+                    location.reload()
+                },
+                error: function (e) {
+                    alert(e.responseText)
+                }
+            })
+        }
+    </script>
+}

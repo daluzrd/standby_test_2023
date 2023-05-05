@@ -1,12 +1,13 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Application.Dto.Pedido
+namespace Infrastructure.Identity.Models
 {
-    public record PedidoProdutosDto(
+    public record Login (
         [Required(ErrorMessage = "O campo {0} é obrigatório.")]
-        Guid ProdutoId,
+        [EmailAddress]
+        string Email,
         
         [Required(ErrorMessage = "O campo {0} é obrigatório.")]
-        int Quantidade
+        string Password
     );
 }

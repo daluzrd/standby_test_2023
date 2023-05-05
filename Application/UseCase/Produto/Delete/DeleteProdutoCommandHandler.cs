@@ -2,40 +2,39 @@ using Domain.Models;
 using SharedKernel.Commands;
 using SharedKernel.Interfaces;
 
-namespace Application.UseCase.Produtos.Delete
+namespace Application.UseCase.Produtos.Delete;
+
+public class DeleteProdutoCommandHandler : ICommandHandler<DeleteProdutoCommand, DeleteProdutoCommandResult>
 {
-    public class DeleteProdutoCommandHandler : ICommandHandler<DeleteProdutoCommand, DeleteProdutoCommandResult>
+    private readonly IRepository<Produto> _repository;
+
+    public DeleteProdutoCommandHandler(IRepository<Produto> repository)
     {
-        private readonly IRepository<Produto> _repository;
+        _repository = repository;
+    }
 
-        public DeleteProdutoCommandHandler(IRepository<Produto> repository)
+    public async Task<DeleteProdutoCommandResult> Handle(DeleteProdutoCommand command, CancellationToken cancellationToken)
+    {
+        var validateResult = command.Validate();
+        if (!validateResult.IsValid())
         {
-            _repository = repository;
+            return new DeleteProdutoCommandResult(false, validateResult.GetErrorMessages());
         }
 
-        public async Task<DeleteProdutoCommandResult> Handle(DeleteProdutoCommand command, CancellationToken cancellationToken)
+        var produto = await _repository.GetById(command.Id);
+        if (produto == null)
         {
-            var validateResult = command.Validate();
-            if (!validateResult.IsValid())
-            {
-                return new DeleteProdutoCommandResult(false, validateResult.GetErrorMessages());
-            }
-
-            var produto = await _repository.GetById(command.Id);
-            if (produto == null)
-            {
-                return new DeleteProdutoCommandResult(false, "Produto não existe.");
-            }
-            
-            _repository.Delete(produto);
-            var result = await _repository.Commit();
-
-            if (!result)
-            {
-                return new DeleteProdutoCommandResult(false, "Não foi possível excluir o produto.");
-            }
-
-            return new DeleteProdutoCommandResult(true, "Produto excluído com sucesso.");
+            return new DeleteProdutoCommandResult(false, "Produto não existe.");
         }
+        
+        _repository.Delete(produto);
+        var result = await _repository.Commit();
+
+        if (!result)
+        {
+            return new DeleteProdutoCommandResult(false, "Não foi possível excluir o produto.");
+        }
+
+        return new DeleteProdutoCommandResult(true, "Produto excluído com sucesso.");
     }
 }

@@ -1,7 +1,6 @@
-namespace Api.Configuration.Security
+namespace Api.Configuration.Security;
+
+public record CorsConfig
 {
-    public record CorsConfig
-    {
-        public CorsPolicyConfig[] Policies { get; init; } = Array.Empty<CorsPolicyConfig>();
-    }
+    public CorsPolicyConfig[] Policies { get; init; } = Array.Empty<CorsPolicyConfig>();
 }

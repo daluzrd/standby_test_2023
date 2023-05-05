@@ -2,28 +2,27 @@ using FluentValidation;
 using SharedKernel.Commands;
 using SharedKernel.Validators;
 
-namespace Application.UseCase.Pedidos.Update
+namespace Application.UseCase.Pedidos.Update;
+
+public class CancelPedidoCommand : ICommand<ClosePedidoCommandResult>
 {
-    public class CancelPedidoCommand : ICommand<ClosePedidoCommandResult>
+    public Guid Id { get; private set; }
+
+    public CancelPedidoCommand(Guid id)
     {
-        public Guid Id { get; private set; }
+        Id = id;
+    }
 
-        public CancelPedidoCommand(Guid id)
-        {
-            Id = id;
-        }
+    public ResultValidator Validate()
+    {
+        var validator = new Validator<CancelPedidoCommand>();
 
-        public ResultValidator Validate()
-        {
-            var validator = new Validator<CancelPedidoCommand>();
+        validator.RuleFor(p => p.Id)
+            .NotEmpty()
+            .WithMessage(@"O campo ""Id"" é obrigatório.")
+            .NotNull()                
+            .WithMessage(@"O campo ""Id"" é obrigatório.");
 
-            validator.RuleFor(p => p.Id)
-                .NotEmpty()
-                .WithMessage(@"O campo ""Id"" é obrigatório.")
-                .NotNull()                
-                .WithMessage(@"O campo ""Id"" é obrigatório.");
-
-            return new ResultValidator(validator.Validate(this));
-        }
+        return new ResultValidator(validator.Validate(this));
     }
 }
