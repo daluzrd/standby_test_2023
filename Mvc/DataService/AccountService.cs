@@ -2,6 +2,7 @@ using System.Net;
 using System.Net.Http.Headers;
 using System.Text;
 using Mvc.DataService.Interface;
+using Mvc.Models;
 using Mvc.Models.Account;
 using Newtonsoft.Json;
 
@@ -23,7 +24,7 @@ public class AccountService : IAccountService
             {
                 if (response.StatusCode == HttpStatusCode.BadRequest)
                 {
-                    throw new Exception(response.Content.ToString());
+                    throw new Exception(await response.Content.ReadAsStringAsync());
                 }
 
                 throw new Exception("Ocorreu um erro realizar o login.");
@@ -43,6 +44,11 @@ public class AccountService : IAccountService
 
     public async Task Register(RegisterViewModel registerViewModel)
     {
+        if (registerViewModel.Password != registerViewModel.PasswordConfirm)
+        {
+            throw new ArgumentException("Senhas não coincidem.");
+        }
+
         using (var client = new HttpClient())
         {
             var jsonContent = JsonConvert.SerializeObject(registerViewModel);
@@ -52,7 +58,7 @@ public class AccountService : IAccountService
             var response = await client.PostAsync(@"http://localhost:5000/api/Account/Register", contentString);
             if (!response.IsSuccessStatusCode)
             {
-                throw new Exception(response.Content.ToString());
+                throw new Exception(await response.Content.ReadAsStringAsync());
             }
         }
     }

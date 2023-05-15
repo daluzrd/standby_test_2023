@@ -37,7 +37,7 @@ public class GetPedidoItemByPedidoIdQueryHandler : IQueryHandler<GetPedidoItemBy
                 pedidoItem.AddProduto(produto);
                 return pedidoItem;
             },
-            "ValorTotal",
+            "ValorTotal,Id",
             new { pedidoId = request.PedidoId}
         );
     }

@@ -2,8 +2,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Mvc.Controllers.Base;
 using Mvc.DataService.Interface;
-using Mvc.Models;
-using Mvc.Models.Cliente;
 using Mvc.Models.Pedido;
 
 namespace Mvc.Controllers;
@@ -111,17 +109,25 @@ public class PedidoController : BaseController
     {
         try
         {
+            var token = GetToken();
+            if (string.IsNullOrWhiteSpace(token))
+            {
+                return Redirect("~/Account/Login");
+            }
+
             if (!ModelState.IsValid)
             {
+                var clientes = await _clienteService.Get(token);
+                ViewBag.Clientes = new SelectList(clientes, "Id", "Nome");
+
                 return View(new GetPedidoByIdViewModel(
-                    createOrEditPedidoViewModel.Id, 
-                    createOrEditPedidoViewModel.Data, 
-                    createOrEditPedidoViewModel.Status, 
-                    DateTime.Now, 
+                    createOrEditPedidoViewModel.Id,
+                    createOrEditPedidoViewModel.Data,
+                    createOrEditPedidoViewModel.Status,
+                    DateTime.Now,
                     createOrEditPedidoViewModel.ClienteId));
             }
 
-            var token = GetToken();
             if (string.IsNullOrWhiteSpace(token))
             {
                 return Redirect("~/Account/Login");

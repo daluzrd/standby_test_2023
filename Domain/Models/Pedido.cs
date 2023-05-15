@@ -37,6 +37,11 @@ public class Pedido : IAggregateRoot
         Status = 'C';
     }
 
+    public void UpdateData(DateTime data)
+    {
+        Data = data;
+    }
+
     public void UpdateDataAtualizacao()
     {
         DataAtualizacao = DateTime.Now;
@@ -76,5 +81,10 @@ public class Pedido : IAggregateRoot
         _pedidoItens.Remove(pedidoItem);
         
         Valor -= pedidoItem.ValorUnitario * pedidoItem.Quantidade;
+    }
+
+    public void UpdateCliente(Cliente cliente)
+    {
+        Cliente = cliente;
     }
 }

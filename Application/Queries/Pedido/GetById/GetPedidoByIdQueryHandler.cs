@@ -13,7 +13,7 @@ public class GetPedidoByIdQueryHandler : IQuerySingleHandler<GetPedidoByIdQueryI
         _repository = repository;
     }
 
-    public async Task<GetPedidoByIdViewModel> Handle(GetPedidoByIdQueryInput request, CancellationToken cancellationToken)
+    public async Task<GetPedidoByIdViewModel?> Handle(GetPedidoByIdQueryInput request, CancellationToken cancellationToken)
     {
         var query = @"select p.Id, p.Data, p.Status, c.Id from Pedido p
             inner join Cliente c
@@ -27,7 +27,7 @@ public class GetPedidoByIdQueryHandler : IQuerySingleHandler<GetPedidoByIdQueryI
                 pedido.AddCliente(cliente.Id);
                 return pedido;
             },
-            splitOn: "Status",
+            splitOn: "Status,Id",
             new { id = request.Id }
             )).FirstOrDefault();
     }

@@ -2,7 +2,7 @@
 
 namespace Mvc.Models.Validations
 {
-    public class IntGreaterThanZero : ValidationAttribute
+    public class IntGreaterThanZeroAttribute : ValidationAttribute
     {
         protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
         {
@@ -22,7 +22,7 @@ namespace Mvc.Models.Validations
                 : ValidationResult.Success;
         }
     }
-    public class IntGreaterOrEqualThanZero : ValidationAttribute
+    public class IntGreaterOrEqualThanZeroAttribute : ValidationAttribute
     {
         protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
         {
@@ -42,7 +42,7 @@ namespace Mvc.Models.Validations
                 : ValidationResult.Success;
         }
     }
-    public class DecimalGreaterThanZero : ValidationAttribute
+    public class DecimalGreaterThanZeroAttribute : ValidationAttribute
     {
         protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
         {
@@ -62,7 +62,7 @@ namespace Mvc.Models.Validations
                 : ValidationResult.Success;
         }
     }
-    public class DecimalGreaterOrEqualThanZero : ValidationAttribute
+    public class DecimalGreaterOrEqualThanZeroAttibute : ValidationAttribute
     {
         protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
         {

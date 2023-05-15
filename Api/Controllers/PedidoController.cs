@@ -97,6 +97,34 @@ public class PedidoController : ControllerBase
         }
     }
 
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdatePedido(Guid id, UpdatePedidoDto updatePedidoDto)
+    {
+        try
+        {
+            var updatePedidoCommand = new UpdatePedidoCommand(
+                id, 
+                updatePedidoDto.clienteId, 
+                updatePedidoDto.data);
+            
+            var result = await _mediator.SendCommand(updatePedidoCommand);
+            if (!result.Success)
+            {
+                return BadRequest(result);
+            }
+
+            return Ok(result);
+        }
+        catch (ArgumentException e)
+        {
+            return BadRequest(e.Message);
+        }
+        catch (Exception e)
+        {
+            return StatusCode(500, e.Message);
+        }
+    }
+
     [HttpPatch("{id}/close")]
     public async Task<IActionResult> ClosePedido(Guid id)
     {

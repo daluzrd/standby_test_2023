@@ -77,6 +77,18 @@ namespace Mvc.Controllers
                     return Redirect("~/Account/Login");
                 }
 
+                if (!ModelState.IsValid)
+                {
+                    var produtos = await _produtoService.Get(token);
+                    ViewBag.Produtos = new SelectList(produtos, "Id", "Descricao");
+
+                    return View(new GetPedidoItemByIdViewModel(
+                        createOrEditPedidoItemViewModel.Id,
+                        createOrEditPedidoItemViewModel.PedidoId,
+                        createOrEditPedidoItemViewModel.Quantidade,
+                        createOrEditPedidoItemViewModel.ProdutoId));
+                }
+
                 if (createOrEditPedidoItemViewModel == null)
                 {
                     return BadRequest(createOrEditPedidoItemViewModel);

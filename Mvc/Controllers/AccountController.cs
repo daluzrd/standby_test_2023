@@ -33,9 +33,9 @@ public class AccountController : BaseController
         }
         catch (Exception e)
         {
-            ViewData["Error"] = e.Message;
+            ModelState.AddModelError("Password", e.Message);
 
-            return View();
+            return View(loginViewModel);
         }
     }
 
@@ -50,15 +50,25 @@ public class AccountController : BaseController
     {
         try
         {
+            if (!ModelState.IsValid)
+            {
+                return View(registerViewModel);
+            }
+
             await _accountService.Register(registerViewModel);
 
             return RedirectToAction("Login");
         }
+        catch (ArgumentException e)
+        {
+            ModelState.AddModelError("PasswordConfirm", e.Message);
+
+            return View(registerViewModel);
+        }
         catch (Exception e)
         {
-            ViewData["Error"] = e.Message;
-
-            return View();
+            TempData["warning"] = e.Message;
+            return View(registerViewModel);
         }
     }
 

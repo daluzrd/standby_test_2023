@@ -62,6 +62,12 @@ public class TokenService : IAuthService
             return false;
         }
 
+        var registeredUser = await _userManager.FindByEmailAsync(createUser.Email);
+        if (registeredUser != null)
+        {
+            throw new ArgumentException("Email já cadastrado.");
+        }
+
         var user = new IdentityUser
         {
             UserName = createUser.Nome,

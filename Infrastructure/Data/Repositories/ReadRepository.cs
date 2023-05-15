@@ -24,7 +24,7 @@ public  class ReadRepository<T>: IReadRepository<T> where T : class
     public async Task<IEnumerable<TReturn>> ExecuteQueryAsync<TFirst, TSecond, TReturn>(string sql, Func<TFirst, TSecond, TReturn> map, string splitOn, object? param = null)
     {
         var connection = _dapperContext.GetConection();
-        IEnumerable<TReturn> queryData = await connection.QueryAsync<TFirst, TSecond, TReturn>(sql,map, param, splitOn:splitOn);
+        IEnumerable<TReturn> queryData = await connection.QueryAsync<TFirst, TSecond, TReturn>(sql,map, param, splitOn: splitOn);
 
         return queryData;
     }

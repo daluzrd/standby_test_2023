@@ -15,7 +15,7 @@ public class GetPedidoQueryHandler : IQueryHandler<GetPedidoQueryInput, IEnumera
 
     public async Task<IEnumerable<GetPedidoViewModel>> Handle(GetPedidoQueryInput request, CancellationToken cancellationToken)
     {
-        var query = @"select p.Id, p.Data, p.Status, p.Valor, c.* from Pedido p
+        var query = @"select p.Id, p.Data, p.Status, p.Valor, p.DataAtualizacao, c.Nome from Pedido p
             inner join Cliente c
             on p.ClienteId = c.Id";
 
@@ -25,6 +25,6 @@ public class GetPedidoQueryHandler : IQueryHandler<GetPedidoQueryInput, IEnumera
                 pedido.AddNomeCliente(cliente.Nome);
                 return pedido;
             }, 
-            "Valor");
+            "Nome");
     }
 }

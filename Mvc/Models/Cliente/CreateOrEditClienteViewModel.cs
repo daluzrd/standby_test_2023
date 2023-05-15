@@ -8,10 +8,10 @@ public class CreateOrEditClienteViewModel
     public Guid Id { get; set; }
 
     [Required(ErrorMessage = "Nome é obrigatório.")]
-    [StringLength(20, MinimumLength = 11, ErrorMessage = "Nome deve conter entre 3 e 20 caracteres.")]
+    [StringLength(20, MinimumLength = 3, ErrorMessage = "Nome deve conter entre 3 e 20 caracteres.")]
     public string Nome { get; set; }
 
-    [Required(ErrorMessage = "Nome é obrigatório")]
+    [Required(ErrorMessage = "Cpf é obrigatório")]
     [CpfCnpj]
     public string CpfCnpj { get; set; }
     public bool Ativo { get; set; }

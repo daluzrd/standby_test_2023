@@ -1,3 +1,4 @@
+using Mvc.Models.Validations;
 using System.ComponentModel.DataAnnotations;
 
 namespace Mvc.Models.Account;
@@ -10,10 +11,10 @@ public record RegisterViewModel(
         [EmailAddress(ErrorMessage = "Email inválido")]
         string Email,
 
-        [Required(ErrorMessage = "Senha é obrigatório.")]
+        [Password]
+        [Required(ErrorMessage = "Senha é obrigatória.")]
         string Password,
 
-
-        [Required(ErrorMessage = "Senha é obrigatório.")]
+        [Required(ErrorMessage = "Confirmação de senha é obrigatória.")]
         string PasswordConfirm
 );
