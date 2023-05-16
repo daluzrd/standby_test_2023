@@ -172,8 +172,8 @@ public class PedidoController : BaseController
         }
     }
 
-    [HttpPatch("{id}/Close")]
-    public async Task<IActionResult> Close([FromRoute] Guid id)
+    [HttpPost("Close")]
+    public async Task<IActionResult> Close(Guid id)
     {
         try
         {
@@ -185,23 +185,21 @@ public class PedidoController : BaseController
 
             await _pedidoService.Close(id, token);
             _notyf.Success("Pedido fechado com sucesso.");
-
-            return NoContent();
         }
         catch (ArgumentException e)
         {
             _notyf.Warning(e.Message);
-            return BadRequest(e.Message);
         }
         catch (Exception e)
         {
             _notyf.Error(e.Message);
-            return StatusCode(500, e.Message);
         }
+
+        return RedirectToAction("Index");
     }
 
-    [HttpPatch("{id}/Cancel")]
-    public async Task<IActionResult> Cancel([FromRoute] Guid id)
+    [HttpPost("Cancel")]
+    public async Task<IActionResult> Cancel(Guid id)
     {
         try
         {
@@ -213,18 +211,16 @@ public class PedidoController : BaseController
 
             await _pedidoService.Cancel(id, token);
             _notyf.Success("Pedido cancelado com sucesso.");
-
-            return NoContent();
         }
         catch (ArgumentException e)
         {
             _notyf.Warning(e.Message);
-            return BadRequest(e.Message);
         }
         catch (Exception e)
         {
             _notyf.Error(e.Message);
-            return StatusCode(500, e.Message);
         }
+
+        return RedirectToAction("Index");
     }
 }

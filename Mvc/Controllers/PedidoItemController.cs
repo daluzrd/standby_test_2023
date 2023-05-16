@@ -122,8 +122,8 @@ public class PedidoItemController : BaseController
         }
     }
 
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete([FromRoute] Guid id)
+    [HttpPost("Delete")]
+    public async Task<IActionResult> Delete(Guid id, Guid pedidoId)
     {
         try
         {
@@ -134,12 +134,17 @@ public class PedidoItemController : BaseController
             }
 
             await _pedidoItemService.Delete(id, token);
-
-            return NoContent();
+            _notyf.Success("Item do pedido excluído com sucesso.");
+        }
+        catch (ArgumentException e)
+        {
+            _notyf.Warning(e.Message);
         }
         catch (Exception e)
         {
-            return StatusCode(500, e.Message);
+            _notyf.Error(e.Message);
         }
+
+        return Redirect($"~/Pedido/{pedidoId}/Item");
     }
 }

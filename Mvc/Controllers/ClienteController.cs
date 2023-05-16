@@ -122,8 +122,8 @@ public class ClienteController : BaseController
         }
     }
 
-    [HttpDelete()]
-    public async Task<IActionResult> Delete([FromQuery] Guid id)
+    [HttpPost("Delete")]
+    public async Task<IActionResult> Delete(Guid id)
     {
         try
         {
@@ -135,18 +135,16 @@ public class ClienteController : BaseController
 
             await _clienteService.Delete(id, token);
             _notyf.Success("Cliente excluído com sucesso.");
-
-            return NoContent();
         }
         catch (ArgumentException e)
         {
             _notyf.Warning(e.Message);
-            return StatusCode(400, e.Message);
         }
         catch (Exception e)
         {
             _notyf.Error(e.Message);
-            return StatusCode(500, e.Message);
         }
+
+        return RedirectToAction("Index");
     }
 }

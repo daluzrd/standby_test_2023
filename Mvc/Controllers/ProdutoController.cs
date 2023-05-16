@@ -124,7 +124,7 @@ public class ProdutoController : BaseController
         }
     }
 
-    [HttpDelete()]
+    [HttpPost("Delete")]
     public async Task<IActionResult> Delete([FromQuery] Guid id)
     {
         try
@@ -138,17 +138,16 @@ public class ProdutoController : BaseController
             await _produtoService.Delete(id, token);
 
             _notyf.Success("Produto excluído com sucesso.");
-            return NoContent();
         }
         catch (ArgumentException e)
         {
             _notyf.Warning(e.Message);
-            return StatusCode(500, e.Message);
         }
         catch (Exception e)
         {
             _notyf.Error(e.Message);
-            return StatusCode(500, e.Message);
         }
+
+        return RedirectToAction("Index");
     }
 }

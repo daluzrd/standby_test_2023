@@ -3,24 +3,17 @@
 @{
     ViewData["Title"] = "Itens do pedido";
 }
-
 <h1>Itens do pedido</h1>
 
-<p>
-    @Html.ActionLink("Novo", "CreateItem", "Pedido", new { id = (Guid)ViewBag.PedidoId } , new { @class="btn btn-primary" })
-</p>
-
+<hr />
+<p>@Html.ActionLink("Novo", "CreateItem", "Pedido", new { id = (Guid)ViewBag.PedidoId } , new { @class="btn btn-primary" })</p>
 <table class="table">
     <thead>
         <tr>
             <th>Produto</th>
             <th>Quantidade</th>
-            <th>
-                @Html.DisplayNameFor(model => model.ValorUnitario)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ValorTotal)
-            </th>
+            <th>Valor unitário</th>
+            <th>Valor total</th>
             <th>Ações</th>
         </tr>
     </thead>
@@ -52,37 +45,51 @@
                 </td>
                 <td>
                     @Html.ActionLink("Editar", "EditItem", "Pedido", new { id = item.Id } , new { @class="btn btn-success btn-sm" })
-                    <button class="btn btn-danger btn-sm" type="button" onclick="deletePedidoItem('@item.Id')">Excluir</button>
+                    <button class="btn btn-danger btn-sm" type="button" onclick="deletePedidoItem('@item.Id', '@item.PedidoId', '@item.Produto.Codigo')">Excluir</button>
                 </td>
             </tr>
         }
     </tbody>
 </table>
 
+<div class="modal fade" id="deletePedidoItemModal">
+    <div class="modal-dialog modal-dialog-centered" tabindex="-1">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Exclusão</h5>
+                <button type="button" class="btn" onclick="closeDeletePedidoModal()" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Tem certeza que deseja excluir o item de código "<span id="deletePedidoItemCodigo"></span>" do pedido ?</p>
+            </div>
+            <div class="modal-footer">
+                <form asp-action="Delete" asp-controller="PedidoItem" method="post">
+                    <input type="hidden" name="id" id="deletePedidoItemId" value="" />
+                    <input type="hidden" name="pedidoId" id="deletePedidoItemPedidoId" value="" />
+                    <button type="button" class="btn btn-secondary" onclick="closeDeletePedidoModal()">Não</button>
+                    <button type="submit" class="btn btn-danger">Sim</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Scripts
     {
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
 
     <script>
-        const appHost = window.location.host;
-        const appProtocol = window.location.protocol
-        const pathArray = window.location.pathname.split('/');
-        const context = pathArray[1];
+        function deletePedidoItem(id, pedidoId, codigo) {
+            $("#deletePedidoItemCodigo").html(codigo)
+            $("#deletePedidoItemId").val(id)
+            $("#deletePedidoItemPedidoId").val(pedidoId)
+            $('#deletePedidoItemModal').modal('show');
+        }
 
-        const contextUrl = appProtocol + "//" + appHost + "/PedidoItem";
-
-        function deletePedidoItem(id) {
-            const url = contextUrl + `/${id}`
-            $.ajax({
-                url: url,
-                type: 'DELETE',
-                success: function () {
-                    location.reload()
-                },
-                error: function (e) {
-                    alert(e.responseText)
-                }
-            })
+        function closeDeletePedidoModal() {
+            $('#deletePedidoItemModal').modal('hide')
         }
     </script>
 }

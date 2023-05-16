@@ -3,13 +3,10 @@
 @{
     ViewData["Title"] = "Pedidos";
 }
-
 <h1>Pedidos</h1>
 
-<p>
-    @Html.ActionLink("Novo", "CreateOrEdit", "Pedido", null , new { @class="btn btn-primary" })
-</p>
-
+<hr />
+<p>@Html.ActionLink("Novo", "CreateOrEdit", "Pedido", null , new { @class="btn btn-primary" })</p>
 <table class="table">
     <thead>
         <tr>
@@ -77,8 +74,8 @@
                     @if (item.Status == 'A')
                     {
                         <a asp-action="PedidoItem" asp-controller="Pedido" asp-route-id="@item.Id" class="btn btn-info btn-sm">Itens</a>
-                        <button class="btn btn-primary btn-sm" type="button" onclick="closePedido('@item.Id')">Fechar</button>
-                        <button class="btn btn-danger btn-sm" type="button" onclick="cancelPedido('@item.Id')">Cancelar</button>
+                        <button class="btn btn-primary btn-sm" type="button" onclick="closePedido('@item.Id', '@item.NomeCliente')">Fechar</button>
+                        <button class="btn btn-danger btn-sm" type="button" onclick="cancelPedido('@item.Id', '@item.NomeCliente')">Cancelar</button>
                     }
                 </td>
             </tr>
@@ -86,40 +83,75 @@
     </tbody>
 </table>
 
+<div class="modal fade" id="closePedidoModal">
+    <div class="modal-dialog modal-dialog-centered" tabindex="-1">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Exclusão</h5>
+                <button type="button" class="btn" onclick="closeClosePedidoModal()" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Tem certeza que deseja fechar o pedido do(a) <span id="closePedidoName"></span> ?</p>
+            </div>
+            <div class="modal-footer">
+                <form asp-action="Close" method="post">
+                    <input type="hidden" name="Id" id="closePedidoId" value="" />
+                    <button type="button" class="btn btn-secondary" onclick="closeClosePedidoModal()">Não</button>
+                    <button type="submit" class="btn btn-danger">Sim</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="cancelPedidoModal">
+    <div class="modal-dialog modal-dialog-centered" tabindex="-1">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Exclusão</h5>
+                <button type="button" class="btn" onclick="closeCancelPedidoModal()" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Tem certeza que deseja cancelar o pedido do(a) <span id="cancelPedidoName"></span> ?</p>
+            </div>
+            <div class="modal-footer">
+                <form asp-action="Cancel" method="post">
+                    <input type="hidden" name="Id" id="cancelPedidoId" value="" />
+                    <button type="button" class="btn btn-secondary" onclick="closeCancelPedidoModal()">Não</button>
+                    <button type="submit" class="btn btn-danger">Sim</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Scripts
     {
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
 
     <script>
-        const appHost = window.location.host;
-        const appProtocol = window.location.protocol
-        const pathArray = window.location.pathname.split('/');
-        const context = pathArray[1];
-
-        const contextUrl = appProtocol + "//" + appHost + "/" + context;
-
-        function closePedido(id) {
-            const url = contextUrl + `/${id}/Close`
-
-            $.ajax({
-                url: url,
-                type: 'PATCH',
-                success: function () {
-                    location.reload()
-                }
-            })
+        function closePedido(id, name) {
+            $("#closePedidoName").html(name)
+            $("#closePedidoId").val(id)
+            $('#closePedidoModal').modal('show');
         }
 
-        function cancelPedido(id) {
-            const url = contextUrl + `/${id}/Cancel`
+        function cancelPedido(id, name) {
+            $("#cancelPedidoName").html(name)
+            $("#cancelPedidoId").val(id)
+            $('#cancelPedidoModal').modal('show');
+        }
 
-            $.ajax({
-                url: url,
-                type: 'PATCH',
-                success: function () {
-                    location.reload()
-                }
-            })
+        function closeClosePedidoModal() {
+            $('#closePedidoModal').modal('hide')
+        }
+
+        function closeCancelPedidoModal() {
+            $('#cancelPedidoModal').modal('hide')
         }
     </script>
 }
