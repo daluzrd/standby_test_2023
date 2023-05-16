@@ -1,3 +1,4 @@
+using AspNetCoreHero.ToastNotification.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 using Mvc.Controllers.Base;
 using Mvc.DataService.Interface;
@@ -7,11 +8,14 @@ namespace Mvc.Controllers;
 
 public class AccountController : BaseController
 {
+    private readonly INotyfService _notyf;
     private readonly IAccountService _accountService;
 
-    public AccountController(IAccountService accountService)
+    public AccountController(INotyfService notyf, IAccountService accountService)
     {
+        _notyf = notyf;
         _accountService = accountService;
+
         ViewBag.IsLogged = false;
     }
 
@@ -31,10 +35,14 @@ public class AccountController : BaseController
 
             return Redirect("~/Home/Index");
         }
+        catch (ArgumentException e)
+        {
+            _notyf.Warning(e.Message);
+            return View(loginViewModel);
+        }
         catch (Exception e)
         {
-            ModelState.AddModelError("Password", e.Message);
-
+            _notyf.Error(e.Message);
             return View(loginViewModel);
         }
     }
@@ -57,17 +65,17 @@ public class AccountController : BaseController
 
             await _accountService.Register(registerViewModel);
 
+            _notyf.Success("Usuário cadastrado com sucesso.");
             return RedirectToAction("Login");
         }
         catch (ArgumentException e)
         {
-            ModelState.AddModelError("PasswordConfirm", e.Message);
-
+            _notyf.Warning(e.Message);
             return View(registerViewModel);
         }
         catch (Exception e)
         {
-            TempData["warning"] = e.Message;
+            _notyf.Error(e.Message);
             return View(registerViewModel);
         }
     }

@@ -1,9 +1,9 @@
 ﻿@model Mvc.Models.Account.RegisterViewModel
 
 @{
-    ViewData["Title"] = "Registro";
+    ViewData["Title"] = "Registrar";
 }
-<h1>Registro</h1>
+<h1>Registrar</h1>
 
 <hr />
 <div class="row">
@@ -34,6 +34,17 @@
                 <input type="submit" value="Registrar" class="btn btn-primary" />
             </div>
         </form>
+    </div>
+    <div class="col-md-8">
+        <div class="h-100 row">
+            <div class="h-100 d-flex align-items-end">
+                <div class="col-md-5">
+                    <div class="alert alert-warning">
+                        <p>A senha deve conter ao menos 8 caracteres, uma letra maiúscula, uma letra minúscula, um número e um carácter especial.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 

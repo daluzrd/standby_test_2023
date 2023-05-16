@@ -87,10 +87,6 @@ public class PedidoController : ControllerBase
 
             return Ok(result);
         }
-        catch (ArgumentException e)
-        {
-            return BadRequest(e.Message);
-        }
         catch (Exception e)
         {
             return StatusCode(500, e.Message);
@@ -115,10 +111,6 @@ public class PedidoController : ControllerBase
 
             return Ok(result);
         }
-        catch (ArgumentException e)
-        {
-            return BadRequest(e.Message);
-        }
         catch (Exception e)
         {
             return StatusCode(500, e.Message);
@@ -140,10 +132,6 @@ public class PedidoController : ControllerBase
 
             return Ok(result);
         }
-        catch (ArgumentException e)
-        {
-            return BadRequest(e.Message);
-        }
         catch (Exception e)
         {
             return StatusCode(500, e.Message);
@@ -164,10 +152,6 @@ public class PedidoController : ControllerBase
             }
 
             return Ok(result);
-        }
-        catch (ArgumentException e)
-        {
-            return BadRequest(e.Message);
         }
         catch (Exception e)
         {

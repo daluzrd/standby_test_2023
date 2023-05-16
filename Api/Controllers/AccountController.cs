@@ -25,7 +25,7 @@ public class AccountController : ControllerBase
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest("Cadastro inválido");
+                return BadRequest("Cadastro inválido.");
             }
 
             if (await _authService.Register(createUser))
@@ -34,6 +34,10 @@ public class AccountController : ControllerBase
             }
 
             return BadRequest("Cadastro inválido.");
+        }
+        catch (ArgumentException e)
+        {
+            return BadRequest(e.Message);
         }
         catch (Exception e)
         {

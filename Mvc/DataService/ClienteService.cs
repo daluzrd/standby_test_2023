@@ -88,10 +88,13 @@ public class ClienteService : IClienteService
             }
         }
 
-        var genericResponse = await response.Content.ReadFromJsonAsync<GenericResponseViewModel>();
-        if (genericResponse != null)
+        if ((int)response.StatusCode == StatusCodes.Status400BadRequest)
         {
-            throw new Exception(genericResponse.Messages.FirstOrDefault());
+            var genericResponse =
+                await response.Content.ReadFromJsonAsync<GenericResponseViewModel>()
+                ?? throw new Exception("Não foi possível atualizar o cliente.");
+
+            throw new ArgumentException(genericResponse.Messages.FirstOrDefault());
         }
 
         throw new Exception("Não foi possível atualizar o cliente.");
@@ -99,23 +102,24 @@ public class ClienteService : IClienteService
 
     public async Task Delete(Guid id, string token)
     {
-        using (var client = new HttpClient())
+        using HttpClient client = new();
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+        var response = await client.DeleteAsync(@"http://localhost:5000/api/Cliente/" + id);
+        if (response.IsSuccessStatusCode)
         {
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
-            var response = await client.DeleteAsync(@"http://localhost:5000/api/Cliente/" + id);
-            if (response.IsSuccessStatusCode)
-            {
-                return;
-            }
-
-            var error = await response.Content.ReadFromJsonAsync<GenericResponseViewModel>();
-            if (error == null)
-            {
-                throw new Exception("Não foi possível excluir o cliente.");
-            }
-
-            throw new Exception(error.Messages.FirstOrDefault());
+            return;
         }
+
+        if ((int)response.StatusCode == StatusCodes.Status400BadRequest)
+        {
+            var error = await response.Content.ReadFromJsonAsync<GenericResponseViewModel>();
+            if (error != null)
+            {
+                throw new ArgumentException(error.Messages.FirstOrDefault());
+            }
+        }
+
+        throw new Exception("Não foi possível excluir o cliente.");
     }
 }

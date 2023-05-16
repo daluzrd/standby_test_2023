@@ -32,10 +32,6 @@ public class ProdutoController : ControllerBase
 
             return Ok(result);
         }
-        catch (ArgumentException e)
-        {
-            return BadRequest(e.Message);
-        }
         catch (Exception e)
         {
             return StatusCode(500, e.Message);
@@ -43,7 +39,7 @@ public class ProdutoController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<IActionResult> Get(Guid id)
+    public async Task<IActionResult> GetById(Guid id)
     {
         try
         {
@@ -103,10 +99,6 @@ public class ProdutoController : ControllerBase
 
             return Ok(result);
         }
-        catch (ArgumentException e)
-        {
-            return BadRequest(e.Message);
-        }
         catch (Exception e)
         {
             return StatusCode(500, e.Message);
@@ -127,10 +119,6 @@ public class ProdutoController : ControllerBase
             }
 
             return NoContent();
-        }
-        catch (ArgumentException e)
-        {
-            return BadRequest(e.Message);
         }
         catch (Exception e)
         {

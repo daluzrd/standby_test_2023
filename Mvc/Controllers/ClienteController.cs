@@ -1,3 +1,4 @@
+using AspNetCoreHero.ToastNotification.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 using Mvc.Controllers.Base;
 using Mvc.DataService.Interface;
@@ -8,9 +9,12 @@ namespace Mvc.Controllers;
 [Route("[controller]")]
 public class ClienteController : BaseController
 {
+    private readonly INotyfService _notyf;
     private readonly IClienteService _clienteService;
-    public ClienteController(IClienteService clienteService)
+
+    public ClienteController(INotyfService notyf, IClienteService clienteService)
     {
+        _notyf = notyf;
         _clienteService = clienteService;
     }
 
@@ -31,7 +35,7 @@ public class ClienteController : BaseController
         }
         catch (Exception e)
         {
-            ViewBag.Error = e;
+            _notyf.Error(e.Message);
             return View();
         }
     }
@@ -56,7 +60,7 @@ public class ClienteController : BaseController
         }
         catch (Exception e)
         {
-            ViewBag.Error = e;
+            _notyf.Error(e.Message);
             return View();
         }
     }
@@ -87,16 +91,33 @@ public class ClienteController : BaseController
             }
 
             await _clienteService.CreateOrEdit(createOrEditClienteViewModel, token);
+            if (createOrEditClienteViewModel.Id != Guid.Empty)
+            {
+                _notyf.Success("Cliente atualizado com sucesso.");
+            }
+            else
+            {
+                _notyf.Success("Cliente cadastrado com sucesso.");
+            }
 
             return Redirect("~/Cliente/Index");
         }
+        catch (ArgumentException e)
+        {
+            _notyf.Warning(e.Message);
+            return View(new ClienteViewModel(
+                createOrEditClienteViewModel.Id,
+                createOrEditClienteViewModel.Nome,
+                createOrEditClienteViewModel.CpfCnpj,
+                createOrEditClienteViewModel.Ativo));
+        }
         catch (Exception e)
         {
-            ViewBag.Error = e.Message;
+            _notyf.Error(e.Message);
             return View(new ClienteViewModel(
-                createOrEditClienteViewModel.Id, 
-                createOrEditClienteViewModel.Nome, 
-                createOrEditClienteViewModel.CpfCnpj, 
+                createOrEditClienteViewModel.Id,
+                createOrEditClienteViewModel.Nome,
+                createOrEditClienteViewModel.CpfCnpj,
                 createOrEditClienteViewModel.Ativo));
         }
     }
@@ -113,11 +134,18 @@ public class ClienteController : BaseController
             }
 
             await _clienteService.Delete(id, token);
+            _notyf.Success("Cliente excluído com sucesso.");
 
             return NoContent();
         }
+        catch (ArgumentException e)
+        {
+            _notyf.Warning(e.Message);
+            return StatusCode(400, e.Message);
+        }
         catch (Exception e)
         {
+            _notyf.Error(e.Message);
             return StatusCode(500, e.Message);
         }
     }

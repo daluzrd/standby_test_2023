@@ -55,7 +55,7 @@ public class ProdutoService : IProdutoService
         HttpResponseMessage response;
         using (var client = new HttpClient())
         {
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);    
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             var uri = @"http://localhost:5000/api/Produto/";
             if (model.Id != Guid.Empty)
@@ -87,10 +87,13 @@ public class ProdutoService : IProdutoService
             }
         }
 
-        var genericResponse = await response.Content.ReadFromJsonAsync<GenericResponseViewModel>();
-        if (genericResponse != null)
+        if ((int)response.StatusCode == StatusCodes.Status400BadRequest)
         {
-            throw new Exception(genericResponse.Messages.FirstOrDefault());
+            var genericResponse = await response.Content.ReadFromJsonAsync<GenericResponseViewModel>();
+            if (genericResponse != null)
+            {
+                throw new Exception(genericResponse.Messages.FirstOrDefault());
+            }
         }
 
         throw new Exception("Não foi possível atualizar o cliente.");
@@ -98,23 +101,24 @@ public class ProdutoService : IProdutoService
 
     public async Task Delete(Guid id, string token)
     {
-        using (var client = new HttpClient())
+        using var client = new HttpClient();
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+        var response = await client.DeleteAsync(@"http://localhost:5000/api/Produto/" + id);
+        if (response.IsSuccessStatusCode)
         {
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
-            var response = await client.DeleteAsync(@"http://localhost:5000/api/Produto/" + id);
-            if (response.IsSuccessStatusCode)
-            {
-                return;
-            }
-
-            var error = await response.Content.ReadFromJsonAsync<GenericResponseViewModel>();
-            if (error == null)
-            {
-                throw new Exception("Não foi possível excluir o produto.");
-            }
-
-            throw new Exception(error.Messages.FirstOrDefault());
+            return;
         }
+
+        if ((int)response.StatusCode == StatusCodes.Status400BadRequest)
+        {
+            var error = await response.Content.ReadFromJsonAsync<GenericResponseViewModel>();
+            if (error != null)
+            {
+                throw new ArgumentException(error.Messages.FirstOrDefault());
+            }
+        }
+
+        throw new Exception("Ocorreu um erro ao tentar excluir o produto.");
     }
 }

@@ -1,3 +1,5 @@
+using AspNetCoreHero.ToastNotification;
+using AspNetCoreHero.ToastNotification.Extensions;
 using Mvc.DataService;
 using Mvc.DataService.Interface;
 
@@ -5,6 +7,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddNotyf(
+    config => {
+        config.DurationInSeconds = 5;
+        config.IsDismissable = false;
+        config.Position = NotyfPosition.TopRight;
+    });
 
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IClienteService, ClienteService>();
@@ -40,5 +49,7 @@ app.UseRouting();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Account}/{action=Login}/{id?}");
+
+app.UseNotyf();
 
 app.Run();

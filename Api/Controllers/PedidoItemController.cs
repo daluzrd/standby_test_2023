@@ -40,12 +40,12 @@ public class PedidoItemController : ControllerBase
     {
         try
         {
-            var createPedidoCommand = new AddItemToPedidoCommand(
+            var addItemToPedidoCommand = new AddItemToPedidoCommand(
                 addItemToPedidoDto.PedidoId,
                 addItemToPedidoDto.ProdutoId,
                 addItemToPedidoDto.Quantidade);
 
-            var result = await _mediator.SendCommand(createPedidoCommand);
+            var result = await _mediator.SendCommand(addItemToPedidoCommand);
             if (!result.Success)
             {
                 return BadRequest(result);

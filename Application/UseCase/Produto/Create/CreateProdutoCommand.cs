@@ -25,33 +25,33 @@ public class CreateProdutoCommand : ICommand<CreateProdutoCommandResult>
 
         validator.RuleFor(c => c.Codigo)
             .NotEmpty()
-            .WithMessage(@"O campo ""Codigo"" é obrigatório.")
+            .WithMessage("Código é obrigatório.")
             .NotNull()                
-            .WithMessage(@"O campo ""Codigo"" é obrigatório.")
+            .WithMessage("Código é obrigatório.")
             .Must(c => c.Length <= 20)
-            .WithMessage(@"O campo ""Codigo"" está inválido.");
+            .WithMessage("Código está inválido.");
 
         validator.RuleFor(c => c.Descricao)
             .NotEmpty()
-            .WithMessage(@"O campo ""Descricao"" é obrigatório.")
+            .WithMessage("Descrição é obrigatório.")
             .NotNull()                
-            .WithMessage(@"O campo ""Descricao"" é obrigatório.")
+            .WithMessage("Descrição é obrigatório.")
             .Must(c => c.Length <= 100)
-            .WithMessage(@"O campo ""Descricao"" está inválido.");
+            .WithMessage("Descrição está inválida.");
 
         validator.RuleFor(c => c.QuantidadeEstoque)
             .NotEmpty()
-            .WithMessage(@"O campo ""QuantidadeEstoque"" é obrigatório.")
+            .WithMessage("Estoque é obrigatório.")
             .NotNull()                
-            .WithMessage(@"O campo ""QuantidadeEstoque"" é obrigatório.");
+            .WithMessage("Estoque é obrigatório.");
 
         validator.RuleFor(c => c.Valor)
             .NotEmpty()
-            .WithMessage(@"O campo ""Valor"" é obrigatório.")
+            .WithMessage("Valor é obrigatório.")
             .NotNull()                
-            .WithMessage(@"O campo ""Valor"" é obrigatório.")
+            .WithMessage("Valor é obrigatório.")
             .PrecisionScale(18, 2, false)
-            .WithMessage(@"O campo ""Valor"" está inválido");
+            .WithMessage("Valor está inválido");
 
         return new ResultValidator(validator.Validate(this));
     }

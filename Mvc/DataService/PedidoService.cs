@@ -84,10 +84,13 @@ public class PedidoService : IPedidoService
             }
         }
 
-        var genericResponse = await response.Content.ReadFromJsonAsync<GenericResponseViewModel>();
-        if (genericResponse != null)
+        if ((int)response.StatusCode == StatusCodes.Status400BadRequest)
         {
-            throw new Exception(genericResponse.Messages.FirstOrDefault());
+            var genericResponse = await response.Content.ReadFromJsonAsync<GenericResponseViewModel>();
+            if (genericResponse != null)
+            {
+                throw new ArgumentException(genericResponse.Messages.FirstOrDefault());
+            }
         }
 
         throw new Exception("Não foi possível atualizar o pedido.");
@@ -111,10 +114,13 @@ public class PedidoService : IPedidoService
             }
         }
 
-        var genericResponse = await response.Content.ReadFromJsonAsync<GenericResponseViewModel>();
-        if (genericResponse != null)
+        if ((int)response.StatusCode == StatusCodes.Status400BadRequest)
         {
-            throw new Exception(genericResponse.Messages.FirstOrDefault());
+            var genericResponse = await response.Content.ReadFromJsonAsync<GenericResponseViewModel>();
+            if (genericResponse != null)
+            {
+                throw new ArgumentException(genericResponse.Messages.FirstOrDefault());
+            }
         }
 
         throw new Exception("Não foi possível atualizar o pedido.");
@@ -138,10 +144,13 @@ public class PedidoService : IPedidoService
             }
         }
 
-        var genericResponse = await response.Content.ReadFromJsonAsync<GenericResponseViewModel>();
-        if (genericResponse != null)
+        if ((int)response.StatusCode == StatusCodes.Status400BadRequest)
         {
-            throw new Exception(genericResponse.Messages.FirstOrDefault());
+            var genericResponse = await response.Content.ReadFromJsonAsync<GenericResponseViewModel>();
+            if (genericResponse != null)
+            {
+                throw new ArgumentException(genericResponse.Messages.FirstOrDefault());
+            }
         }
 
         throw new Exception("Não foi possível atualizar o pedido.");

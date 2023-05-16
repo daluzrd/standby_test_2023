@@ -1,3 +1,4 @@
+using AspNetCoreHero.ToastNotification.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Mvc.Controllers.Base;
@@ -9,11 +10,14 @@ namespace Mvc.Controllers;
 [Route("[controller]")]
 public class PedidoController : BaseController
 {
+    private readonly INotyfService _notyf;
     private readonly IPedidoService _pedidoService;
     private readonly IClienteService _clienteService;
     private readonly IPedidoItemService _pedidoItemService;
-    public PedidoController(IPedidoService pedidoService, IClienteService clienteService, IPedidoItemService pedidoItemService, IProdutoService produtoService)
+
+    public PedidoController(INotyfService notyf, IPedidoService pedidoService, IClienteService clienteService, IPedidoItemService pedidoItemService)
     {
+        _notyf = notyf;
         _pedidoService = pedidoService;
         _clienteService = clienteService;
         _pedidoItemService = pedidoItemService;
@@ -36,7 +40,7 @@ public class PedidoController : BaseController
         }
         catch (Exception e)
         {
-            ViewBag.Error = e;
+            _notyf.Error(e.Message);
             return View();
         }
     }
@@ -60,7 +64,7 @@ public class PedidoController : BaseController
         }
         catch (Exception e)
         {
-            ViewBag.Error = e;
+            _notyf.Error(e.Message);
             return View();
         }
     }
@@ -88,6 +92,7 @@ public class PedidoController : BaseController
         }
         catch (Exception e)
         {
+            _notyf.Error(e.Message);
             return View();
         }
     }
@@ -132,17 +137,32 @@ public class PedidoController : BaseController
             {
                 return Redirect("~/Account/Login");
             }
-            if (createOrEditPedidoViewModel == null)
-            {
-                return BadRequest(createOrEditPedidoViewModel);
-            }
 
             await _pedidoService.CreateOrEdit(createOrEditPedidoViewModel, token);
+            if (createOrEditPedidoViewModel.Id != Guid.Empty)
+            {
+                _notyf.Success("Pedido cadastrado com sucesso.");
+            }
+            else
+            {
+                _notyf.Success("Pedido atualizado com sucesso.");
+            }
+
             return Redirect("~/Pedido/Index");
+        }
+        catch (ArgumentException e)
+        {
+            _notyf.Warning(e.Message);
+            return View(new GetPedidoByIdViewModel(
+                    createOrEditPedidoViewModel.Id,
+                    createOrEditPedidoViewModel.Data,
+                    createOrEditPedidoViewModel.Status,
+                    DateTime.Now,
+                    createOrEditPedidoViewModel.ClienteId));
         }
         catch (Exception e)
         {
-            ViewBag.Error = e.Message;
+            _notyf.Error(e.Message);
             return View(new GetPedidoByIdViewModel(
                     createOrEditPedidoViewModel.Id,
                     createOrEditPedidoViewModel.Data,
@@ -164,11 +184,18 @@ public class PedidoController : BaseController
             }
 
             await _pedidoService.Close(id, token);
-            return NoContent();
+            _notyf.Success("Pedido fechado com sucesso.");
 
+            return NoContent();
+        }
+        catch (ArgumentException e)
+        {
+            _notyf.Warning(e.Message);
+            return BadRequest(e.Message);
         }
         catch (Exception e)
         {
+            _notyf.Error(e.Message);
             return StatusCode(500, e.Message);
         }
     }
@@ -185,11 +212,18 @@ public class PedidoController : BaseController
             }
 
             await _pedidoService.Cancel(id, token);
-            return NoContent();
+            _notyf.Success("Pedido cancelado com sucesso.");
 
+            return NoContent();
+        }
+        catch (ArgumentException e)
+        {
+            _notyf.Warning(e.Message);
+            return BadRequest(e.Message);
         }
         catch (Exception e)
         {
+            _notyf.Error(e.Message);
             return StatusCode(500, e.Message);
         }
     }
