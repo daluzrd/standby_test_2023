@@ -7,7 +7,7 @@
 
 <hr />
 <p>
-    @Html.ActionLink("Novo", "CreateOrEdit", "Cliente", null , new { @class="btn btn-primary" })
+    <a asp-action="CreateOrEdit" asp-controller="Cliente" class="btn btn-primary">Novo</a>
 </p>
 
 <table class="table">
@@ -69,7 +69,7 @@
             <div class="modal-footer">
                 <form asp-action="Delete" method="post">
                     <input type="hidden" name="Id" id="deletingClienteId" value="" />
-                    <button type="button" class="btn btn-secondary" onclick="closeDeleteClienteModal()">Não</button>
+                    <button type="button" class="btn btn-default" onclick="closeDeleteClienteModal()">Não</button>
                     <button type="submit" class="btn btn-danger">Sim</button>
                 </form>
             </div>

@@ -9,11 +9,11 @@ public class CreateOrEditProdutoViewModel
 
     [Required]
     [MaxLength(20)]
-    public string Codigo { get; set; }
+    public string Codigo { get; set; } = null!;
 
     [Required]
     [MaxLength(100)]
-    public string Descricao { get; set; }
+    public string Descricao { get; set; } = null!;
 
     [Required]
     [IntGreaterOrEqualThanZero]

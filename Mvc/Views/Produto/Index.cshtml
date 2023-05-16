@@ -6,7 +6,9 @@
 <h1>Produtos</h1>
 
 <hr />
-<p>@Html.ActionLink("Novo", "CreateOrEdit", "Produto", null , new { @class="btn btn-primary" })</p>
+<p>
+    <a asp-action="CreateOrEdit" asp-controller="Produto" class="btn btn-primary">Novo</a>
+</p>
 <table class="table">
     <thead>
         <tr>
@@ -69,7 +71,7 @@
             <div class="modal-footer">
                 <form asp-action="Delete" method="post">
                     <input type="hidden" name="Id" id="deletingProdutoId" value="" />
-                    <button type="button" class="btn btn-secondary" onclick="closeDeleteProdutoModal()">Não</button>
+                    <button type="button" class="btn btn-default" onclick="closeDeleteProdutoModal()">Não</button>
                     <button type="submit" class="btn btn-danger">Sim</button>
                 </form>
             </div>

@@ -7,9 +7,14 @@ public class PasswordAttribute : ValidationAttribute
 {
     protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
     {
+        if (value == null)
+        {
+            return new ValidationResult("Senha inválida.");
+        }
+
         if (string.IsNullOrWhiteSpace(value.ToString()))
         {
-            return new ValidationResult("Senha é obrigatória");
+            return new ValidationResult("Senha é obrigatória.");
         }
 
         var convertedValue = (string)value;
@@ -18,7 +23,9 @@ public class PasswordAttribute : ValidationAttribute
         bool isValid = rg.IsMatch(convertedValue);
 
         return !isValid
-            ? new ValidationResult($"Senha deve possuir pelo menos 8 caracteres, um carácter maiúsculo, um carácter minúsculo, um carácter numérico e um carácter especial")
+            ? new ValidationResult(
+                "A senha deve possuir pelo menos 8 caracteres, um carácter maiúsculo, " +
+                "um carácter minúsculo, um carácter numérico e um carácter especial.")
             : ValidationResult.Success;
     }
 }

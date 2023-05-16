@@ -6,7 +6,9 @@
 <h1>Pedidos</h1>
 
 <hr />
-<p>@Html.ActionLink("Novo", "CreateOrEdit", "Pedido", null , new { @class="btn btn-primary" })</p>
+<p>
+    <a asp-action="CreateOrEdit" asp-controller="Pedido" class="btn btn-primary">Novo</a>
+</p>
 <table class="table">
     <thead>
         <tr>
@@ -98,7 +100,7 @@
             <div class="modal-footer">
                 <form asp-action="Close" method="post">
                     <input type="hidden" name="Id" id="closePedidoId" value="" />
-                    <button type="button" class="btn btn-secondary" onclick="closeClosePedidoModal()">Não</button>
+                    <button type="button" class="btn btn-default" onclick="closeClosePedidoModal()">Não</button>
                     <button type="submit" class="btn btn-danger">Sim</button>
                 </form>
             </div>
