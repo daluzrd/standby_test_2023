@@ -64,6 +64,7 @@ public class PedidoController : BaseController
             }
 
             ViewBag.PedidoId = id;
+            ViewBag.Filter = filter;
 
             var pedidoItems = await _pedidoItemService.GetPedidoItemByPedidoId(id, token, filter);
             return View(pedidoItems);
@@ -77,7 +78,7 @@ public class PedidoController : BaseController
     }
 
     [HttpPost("{id}/Item")]
-    public IActionResult FilteredPedidoItem(Guid id, string filter)
+    public IActionResult FilteredIndex(Guid id, string filter)
     {
         return Redirect($"~/Pedido/{id}/Item?filter={filter}");
     }

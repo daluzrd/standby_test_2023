@@ -7,7 +7,7 @@
 
 <hr />
 <div class="d-flex justify-content-between">
-    <p>@Html.ActionLink("Novo", "CreateItem", "Pedido", new { id = (Guid)ViewBag.PedidoId } , new { @class="btn btn-primary" })</p>
+    <p>@Html.ActionLink("Novo", "Index", "PedidoItem", new { id = (Guid)ViewBag.PedidoId } , new { @class="btn btn-primary" })</p>
     <form method="post">
         <div class="d-flex">
             <input name="filter" type="text" class="form-control mr-2" value="@ViewBag.Filter" />

@@ -54,23 +54,23 @@ public class ReadRepository<T> : IReadRepository<T> where T : class
     }
 
     public string BuildQueryFilters(
-        string[]? textVariables = null, 
-        string[]? numberVariables = null,
-        string[]? dateVariables = null)
+        string query,
+        List<string>? textVariables = null, 
+        List<string>? numberVariables = null,
+        List<string>? dateVariables = null)
     {
         if (textVariables == null && numberVariables == null && dateVariables == null)
         {
-            return string.Empty;
+            return query;
         }
 
-        var queryFilter = string.Empty;
         var firstLoop = true;
 
         if (textVariables != null)
         {
             foreach (var textVariable in textVariables!)
             {
-                queryFilter += firstLoop
+                query += firstLoop
                     ? $" lower({textVariable}) like @filter"
                     : $" or lower({textVariable}) like @filter";
 
@@ -82,7 +82,7 @@ public class ReadRepository<T> : IReadRepository<T> where T : class
         {
             foreach (var numberVariable in numberVariables!)
             {
-                queryFilter += firstLoop
+                query += firstLoop
                     ? $" {numberVariable} = @numberFilter"
                     : $" or {numberVariable} = @numberFilter";
 
@@ -94,7 +94,7 @@ public class ReadRepository<T> : IReadRepository<T> where T : class
         {
             foreach (var dateVariable in dateVariables!)
             {
-                queryFilter += firstLoop
+                query += firstLoop
                     ? $" datediff(day, {dateVariable}, @dateFilter) = 0"
                     : $" or datediff(day, {dateVariable}, @dateFilter) = 0";
 
@@ -102,6 +102,6 @@ public class ReadRepository<T> : IReadRepository<T> where T : class
             }
         }
 
-        return queryFilter;
+        return query;
     }
 }

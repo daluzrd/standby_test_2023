@@ -30,29 +30,26 @@ public class GetPedidoItemByPedidoIdQueryHandler : IQueryHandler<GetPedidoItemBy
             inner join Produto p
             on pi.ProdutoId = p.Id
             where pi.PedidoId = @pedidoId";
-        var textVariables = new string[] { "p.Descricao" };
+        var textVariables = new List<string> { "p.Descricao" };
+        List<string>? numberVariables = null;
 
         var filterIsNumber = false;
         if (decimal.TryParse(request.Filter, out decimal numberFilter))
         {
             filterIsNumber = true;
-            var numberVariables = new string[] { "pi.Quantidade", "pi.ValorUnitario", "pi.ValorTotal" };
-            query += request.Filter != null
-                ? $" and ({_repository.BuildQueryFilters(textVariables: textVariables, numberVariables: numberVariables)})"
-                : string.Empty;
-        } 
-        else
+            numberVariables = new List<string> { "pi.Quantidade", "pi.ValorUnitario", "pi.ValorTotal" };
+        }
+
+        if (request.Filter != null)
         {
-            query += request.Filter != null
-                ? $" and ({_repository.BuildQueryFilters(textVariables: textVariables)})"
-                : string.Empty;
+            query = _repository.BuildQueryFilters(query + " and (", textVariables: textVariables, numberVariables: numberVariables) + ")";
         }
 
         var textFilter = $"%{request.Filter}%";
-
         return await _repository.ExecuteQueryAsync<GetPedidoItemByPedidoIdViewModel, GetProdutoByIdViewModel, GetPedidoItemByPedidoIdViewModel>(
             query,
-            (pedidoItem, produto) => {
+            (pedidoItem, produto) =>
+            {
                 pedidoItem.AddProduto(produto);
                 return pedidoItem;
             },
