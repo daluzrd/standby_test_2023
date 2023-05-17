@@ -10,14 +10,19 @@ namespace Mvc.DataService;
 public class ClienteService : IClienteService
 {
 
-    public async Task<IEnumerable<ClienteViewModel>> Get(string token)
+    public async Task<IEnumerable<ClienteViewModel>> Get(string token, string? filter = null)
     {
 
         using (var client = new HttpClient())
         {
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            var response = await client.GetAsync(@"http://localhost:5000/api/Cliente");
+            var url = "http://localhost:5000/api/Cliente";
+            url += filter != null 
+                ? $"?filter={filter}" 
+                : string.Empty;
+
+            var response = await client.GetAsync(url);
             if (response.IsSuccessStatusCode)
             {
                 var clientes = await response.Content.ReadFromJsonAsync<List<ClienteViewModel>>();

@@ -24,7 +24,7 @@ public class PedidoController : BaseController
     }
 
     [HttpGet("Index")]
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index([FromQuery] string filter)
     {
         try
         {
@@ -34,8 +34,9 @@ public class PedidoController : BaseController
                 return Redirect("~/Account/Login");
             }
 
-            var produtos = await _pedidoService.Get(token);
-            return View(produtos);
+            ViewBag.Filter = filter ?? string.Empty;
+            var pedidos = await _pedidoService.Get(token, filter);
+            return View(pedidos);
 
         }
         catch (Exception e)
@@ -45,8 +46,14 @@ public class PedidoController : BaseController
         }
     }
 
+    [HttpPost("Index")]
+    public IActionResult FilteredIndex(string filter)
+    {
+        return Redirect($"~/Pedido/Index?filter={filter}");
+    }
+
     [HttpGet("{id}/Item")]
-    public async Task<IActionResult> PedidoItem(Guid id)
+    public async Task<IActionResult> PedidoItem([FromRoute] Guid id, [FromQuery] string filter)
     {
         try
         {
@@ -58,7 +65,7 @@ public class PedidoController : BaseController
 
             ViewBag.PedidoId = id;
 
-            var pedidoItems = await _pedidoItemService.GetPedidoItemByPedidoId(id, token);
+            var pedidoItems = await _pedidoItemService.GetPedidoItemByPedidoId(id, token, filter);
             return View(pedidoItems);
 
         }
@@ -67,6 +74,12 @@ public class PedidoController : BaseController
             _notyf.Error(e.Message);
             return View();
         }
+    }
+
+    [HttpPost("{id}/Item")]
+    public IActionResult FilteredPedidoItem(Guid id, string filter)
+    {
+        return Redirect($"~/Pedido/{id}/Item?filter={filter}");
     }
 
     [HttpGet("CreateOrEdit")]

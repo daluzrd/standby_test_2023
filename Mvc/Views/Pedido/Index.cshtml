@@ -6,9 +6,16 @@
 <h1>Pedidos</h1>
 
 <hr />
-<p>
-    <a asp-action="CreateOrEdit" asp-controller="Pedido" class="btn btn-primary">Novo</a>
-</p>
+
+<div class="d-flex justify-content-between">
+    <p><a asp-action="CreateOrEdit" asp-controller="Pedido" class="btn btn-primary">Novo</a></p>
+    <form method="post">
+        <div class="d-flex">
+            <input name="filter" type="text" class="form-control mr-2" value="@ViewBag.Filter" />
+            <button class="btn btn-success" type="submit"><i class="fa fa-search"></i></button>
+        </div>
+    </form>
+</div>
 <table class="table">
     <thead>
         <tr>

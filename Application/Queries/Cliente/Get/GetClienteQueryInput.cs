@@ -5,5 +5,10 @@ namespace Application.Queries.Clientes.Get;
 
 public class GetClienteQueryInput : IQuery<IEnumerable<GetClienteByIdViewModel>>
 {
-    public GetClienteQueryInput() {}
+    public string Filter { get; private set; }
+
+    public GetClienteQueryInput(string filter)
+    {
+        Filter = filter;
+    }
 }

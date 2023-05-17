@@ -19,7 +19,7 @@ public class ProdutoController : BaseController
     }
 
     [HttpGet("Index")]
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index([FromQuery] string filter)
     {
         try
         {
@@ -29,7 +29,8 @@ public class ProdutoController : BaseController
                 return Redirect("~/Account/Login");
             }
 
-            var produtos = await _produtoService.Get(token);
+            ViewBag.Filter = filter ?? string.Empty;
+            var produtos = await _produtoService.Get(token, filter);
             return View(produtos);
         }
         catch (Exception e)
@@ -37,6 +38,12 @@ public class ProdutoController : BaseController
             _notyf.Error(e.Message);
             return View();
         }
+    }
+
+    [HttpPost("Index")]
+    public IActionResult IndexFiltered(string filter)
+    {
+        return Redirect($"~/Produto/Index?filter={filter}");
     }
 
     [HttpGet("CreateOrEdit")]

@@ -3,7 +3,7 @@ using SharedKernel.Interfaces;
 
 namespace Infrastructure.Data.Repositories;
 
-public  class ReadRepository<T>: IReadRepository<T> where T : class
+public class ReadRepository<T> : IReadRepository<T> where T : class
 {
     private readonly DapperContext _dapperContext;
 
@@ -15,7 +15,7 @@ public  class ReadRepository<T>: IReadRepository<T> where T : class
     public async Task<T> ExecuteQueryFirstOrDefaultAsync(string sql, object? param = null)
     {
         var connection = _dapperContext.GetConection();
-        var queryData =  await connection.QueryFirstOrDefaultAsync<T>(sql, param);
+        var queryData = await connection.QueryFirstOrDefaultAsync<T>(sql, param);
 
         return queryData;
 
@@ -24,7 +24,7 @@ public  class ReadRepository<T>: IReadRepository<T> where T : class
     public async Task<IEnumerable<TReturn>> ExecuteQueryAsync<TFirst, TSecond, TReturn>(string sql, Func<TFirst, TSecond, TReturn> map, string splitOn, object? param = null)
     {
         var connection = _dapperContext.GetConection();
-        IEnumerable<TReturn> queryData = await connection.QueryAsync<TFirst, TSecond, TReturn>(sql,map, param, splitOn: splitOn);
+        IEnumerable<TReturn> queryData = await connection.QueryAsync<TFirst, TSecond, TReturn>(sql, map, param, splitOn: splitOn);
 
         return queryData;
     }
@@ -32,7 +32,7 @@ public  class ReadRepository<T>: IReadRepository<T> where T : class
     public async Task<IEnumerable<TReturn>> ExecuteQueryFirstOrDefaultAsync<TFirst, TSecond, TReturn>(string sql, Func<TFirst, TSecond, TReturn> map, string splitOn, object? param = null)
     {
         var connection = _dapperContext.GetConection();
-        IEnumerable<TReturn> queryData = await connection.QueryAsync<TFirst, TSecond, TReturn>(sql,map, param, splitOn:splitOn);
+        IEnumerable<TReturn> queryData = await connection.QueryAsync<TFirst, TSecond, TReturn>(sql, map, param, splitOn: splitOn);
 
         return queryData;
     }
@@ -43,7 +43,7 @@ public  class ReadRepository<T>: IReadRepository<T> where T : class
         IEnumerable<TReturn> queryData = await connection.QueryAsync<TFirst, TSecond, TThird, TReturn>(sql, map, param, splitOn: splitOn);
 
         return queryData;
-    }        
+    }
 
     public async Task<IEnumerable<T>> ExecuteQueryAsync(string sql, object? param = null)
     {
@@ -51,5 +51,57 @@ public  class ReadRepository<T>: IReadRepository<T> where T : class
         IEnumerable<T> queryData = await connection.QueryAsync<T>(sql, param);
 
         return queryData;
+    }
+
+    public string BuildQueryFilters(
+        string[]? textVariables = null, 
+        string[]? numberVariables = null,
+        string[]? dateVariables = null)
+    {
+        if (textVariables == null && numberVariables == null && dateVariables == null)
+        {
+            return string.Empty;
+        }
+
+        var queryFilter = string.Empty;
+        var firstLoop = true;
+
+        if (textVariables != null)
+        {
+            foreach (var textVariable in textVariables!)
+            {
+                queryFilter += firstLoop
+                    ? $" lower({textVariable}) like @filter"
+                    : $" or lower({textVariable}) like @filter";
+
+                firstLoop = false;
+            }
+        }
+
+        if (numberVariables != null)
+        {
+            foreach (var numberVariable in numberVariables!)
+            {
+                queryFilter += firstLoop
+                    ? $" {numberVariable} = @numberFilter"
+                    : $" or {numberVariable} = @numberFilter";
+
+                firstLoop = false;
+            }
+        }
+
+        if (dateVariables != null)
+        {
+            foreach (var dateVariable in dateVariables!)
+            {
+                queryFilter += firstLoop
+                    ? $" datediff(day, {dateVariable}, @dateFilter) = 0"
+                    : $" or datediff(day, {dateVariable}, @dateFilter) = 0";
+
+                firstLoop = false;
+            }
+        }
+
+        return queryFilter;
     }
 }

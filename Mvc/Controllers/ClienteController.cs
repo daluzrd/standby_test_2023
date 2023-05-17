@@ -19,7 +19,7 @@ public class ClienteController : BaseController
     }
 
     [HttpGet("Index")]
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index([FromQuery] string filter)
     {
         try
         {
@@ -29,15 +29,21 @@ public class ClienteController : BaseController
                 return Redirect("~/Account/Login");
             }
 
-            var clientes = await _clienteService.Get(token);
+            ViewBag.Filter = filter ?? string.Empty;
+            var clientes = await _clienteService.Get(token, filter);
             return View(clientes);
-
         }
         catch (Exception e)
         {
             _notyf.Error(e.Message);
             return View();
         }
+    }
+
+    [HttpPost("Index")]
+    public IActionResult IndexFiltered(string filter)
+    {
+        return Redirect($"~/Cliente/Index?filter={filter}");
     }
 
     [HttpGet("CreateOrEdit")]

@@ -8,13 +8,18 @@ using System.Text;
 namespace Mvc.DataService;
 public class PedidoService : IPedidoService
 {
-    public async Task<IEnumerable<PedidoViewModel>> Get(string token)
+    public async Task<IEnumerable<PedidoViewModel>> Get(string token, string? filter)
     {
         using (var client = new HttpClient())
         {
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            var response = await client.GetAsync(@"http://localhost:5000/api/Pedido");
+            var url = "http://localhost:5000/api/Pedido";
+            url += !string.IsNullOrWhiteSpace(filter)
+                ? $"?filter={filter}"
+                : string.Empty;
+
+            var response = await client.GetAsync(url);
             if (response.IsSuccessStatusCode)
             {
                 var pedidos = await response.Content.ReadFromJsonAsync<List<PedidoViewModel>>();

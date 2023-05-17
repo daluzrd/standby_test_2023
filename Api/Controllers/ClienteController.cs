@@ -22,11 +22,11 @@ public class ClienteController : ControllerBase
     }
 
     [HttpGet()]
-    public async Task<IActionResult> Get()
+    public async Task<IActionResult> Get([FromQuery] string filter)
     {
         try
         {
-            var getClienteQueryInput = new GetClienteQueryInput();
+            var getClienteQueryInput = new GetClienteQueryInput(filter);
             var result = await _mediator.SendQuery(getClienteQueryInput);
 
             return Ok(result);

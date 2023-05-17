@@ -5,5 +5,10 @@ namespace Application.Queries.Produtos.Get;
 
 public class GetProdutoQueryInput : IQuery<IEnumerable<GetProdutoByIdViewModel>>
 {
-    public GetProdutoQueryInput() {}
+    public string Filter { get; private set; }
+
+    public GetProdutoQueryInput(string filter)
+    {
+        Filter = filter;
+    }
 }

@@ -23,11 +23,11 @@ public class PedidoController : ControllerBase
     }
 
     [HttpGet()]
-    public async Task<IActionResult> Get()
+    public async Task<IActionResult> Get([FromQuery] string filter)
     {
         try
         {
-            var getPedidoQueryInput = new GetPedidoQueryInput();
+            var getPedidoQueryInput = new GetPedidoQueryInput(filter);
             var result = await _mediator.SendQuery(getPedidoQueryInput);
 
             return Ok(result);
@@ -55,11 +55,11 @@ public class PedidoController : ControllerBase
     }
 
     [HttpGet("{id}/Item")]
-    public async Task<IActionResult> GetPedidoItemByPedidoId(Guid id)
+    public async Task<IActionResult> GetPedidoItemByPedidoId([FromRoute] Guid id, [FromQuery] string filter)
     {
         try
         {
-            var request = new GetPedidoItemByPedidoIdQueryInput(id);
+            var request = new GetPedidoItemByPedidoIdQueryInput(id, filter);
             var result = await _mediator.SendQuery(request);
 
             return Ok(result);

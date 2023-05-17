@@ -6,7 +6,15 @@
 <h1>Itens do pedido</h1>
 
 <hr />
-<p>@Html.ActionLink("Novo", "CreateItem", "Pedido", new { id = (Guid)ViewBag.PedidoId } , new { @class="btn btn-primary" })</p>
+<div class="d-flex justify-content-between">
+    <p>@Html.ActionLink("Novo", "CreateItem", "Pedido", new { id = (Guid)ViewBag.PedidoId } , new { @class="btn btn-primary" })</p>
+    <form method="post">
+        <div class="d-flex">
+            <input name="filter" type="text" class="form-control mr-2" value="@ViewBag.Filter" />
+            <button class="btn btn-success" type="submit"><i class="fa fa-search"></i></button>
+        </div>
+    </form>
+</div>
 <table class="table">
     <thead>
         <tr>

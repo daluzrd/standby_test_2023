@@ -6,7 +6,7 @@ namespace Mvc.DataService.Interface;
 
 public interface IPedidoItemService
 {
-    Task<List<GetPedidoItemByPedidoIdViewModel>> GetPedidoItemByPedidoId(Guid pedidoId, string token);
+    Task<List<GetPedidoItemByPedidoIdViewModel>> GetPedidoItemByPedidoId(Guid pedidoId, string token, string? filter);
     Task<GetPedidoItemByIdViewModel> GetPedidoItemById(Guid pedidoId, string token);
     Task<GenericResponseViewModel> CreateOrEdit(CreateOrEditPedidoItemViewModel model, string token);
     Task Delete(Guid id, string token);

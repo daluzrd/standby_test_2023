@@ -11,14 +11,19 @@ namespace Mvc.DataService;
 public class PedidoItemService : IPedidoItemService
 {
 
-    public async Task<List<GetPedidoItemByPedidoIdViewModel>> GetPedidoItemByPedidoId(Guid pedidoId, string token)
+    public async Task<List<GetPedidoItemByPedidoIdViewModel>> GetPedidoItemByPedidoId(Guid pedidoId, string token, string? filter)
     {
 
         using (var client = new HttpClient())
         {
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            var response = await client.GetAsync(@"http://localhost:5000/api/Pedido/" + pedidoId + "/Item");
+            var url = $"http://localhost:5000/api/Pedido/{pedidoId}/Item";
+            url += filter != null
+                ? $"?filter={filter}"
+                : string.Empty;
+
+            var response = await client.GetAsync(url);
             if (response.IsSuccessStatusCode)
             {
                 var pedidoItem = await response.Content.ReadFromJsonAsync<List<GetPedidoItemByPedidoIdViewModel>>();

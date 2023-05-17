@@ -9,14 +9,19 @@ namespace Mvc.DataService;
 public class ProdutoService : IProdutoService
 {
 
-    public async Task<IEnumerable<ProdutoViewModel>> Get(string token)
+    public async Task<IEnumerable<ProdutoViewModel>> Get(string token, string? filter = null)
     {
 
         using (var client = new HttpClient())
         {
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            var response = await client.GetAsync(@"http://localhost:5000/api/Produto");
+            var url = "http://localhost:5000/api/Produto";
+            url += !string.IsNullOrWhiteSpace(filter)
+                ? $"?filter={filter}"
+                : string.Empty;
+
+            var response = await client.GetAsync(url);
             if (response.IsSuccessStatusCode)
             {
                 var produtos = await response.Content.ReadFromJsonAsync<List<ProdutoViewModel>>();
