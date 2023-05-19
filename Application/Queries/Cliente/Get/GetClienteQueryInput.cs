@@ -3,7 +3,7 @@ using SharedKernel.Queries;
 
 namespace Application.Queries.Clientes.Get;
 
-public class GetClienteQueryInput : IQuery<IEnumerable<GetClienteByIdViewModel>>
+public class GetClienteQueryInput : IQuerySingle<GetClienteViewModel>
 {
     public string Filter { get; private set; }
     public string OrderBy { get; private set; }

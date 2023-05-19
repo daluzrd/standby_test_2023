@@ -95,7 +95,7 @@ public class PedidoController : BaseController
             }
 
             var clientes = await _clienteService.Get(token);
-            ViewBag.Clientes = new SelectList(clientes, "Id", "Nome");
+            ViewBag.Clientes = new SelectList(clientes.Data, "Id", "Nome");
 
             if (id != Guid.Empty)
             {
@@ -137,7 +137,7 @@ public class PedidoController : BaseController
             if (!ModelState.IsValid)
             {
                 var clientes = await _clienteService.Get(token);
-                ViewBag.Clientes = new SelectList(clientes, "Id", "Nome");
+                ViewBag.Clientes = new SelectList(clientes.Data, "Id", "Nome");
 
                 return View(new GetPedidoByIdViewModel(
                     createOrEditPedidoViewModel.Id,

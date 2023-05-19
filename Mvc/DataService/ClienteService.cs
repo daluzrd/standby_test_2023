@@ -10,7 +10,7 @@ namespace Mvc.DataService;
 public class ClienteService : IClienteService
 {
 
-    public async Task<IEnumerable<ClienteViewModel>> Get(string token, string? filter = null)
+    public async Task<ClienteViewModel> Get(string token, string? filter = null)
     {
 
         using (var client = new HttpClient())
@@ -25,7 +25,7 @@ public class ClienteService : IClienteService
             var response = await client.GetAsync(url);
             if (response.IsSuccessStatusCode)
             {
-                var clientes = await response.Content.ReadFromJsonAsync<List<ClienteViewModel>>();
+                var clientes = await response.Content.ReadFromJsonAsync<ClienteViewModel>();
                 if (clientes != null)
                 {
                     return clientes;
@@ -36,7 +36,7 @@ public class ClienteService : IClienteService
         throw new Exception("Ocorreu um erro ao recuperar os clientes.");
     }
 
-    public async Task<ClienteViewModel> GetById(Guid id, string token)
+    public async Task<ClienteByIdViewModel> GetById(Guid id, string token)
     {
 
         using (var client = new HttpClient())
@@ -46,7 +46,7 @@ public class ClienteService : IClienteService
             var response = await client.GetAsync(@"http://localhost:5000/api/Cliente/" + id);
             if (response.IsSuccessStatusCode)
             {
-                var cliente = await response.Content.ReadFromJsonAsync<ClienteViewModel>();
+                var cliente = await response.Content.ReadFromJsonAsync<ClienteByIdViewModel>();
                 if (cliente != null)
                 {
                     return cliente;

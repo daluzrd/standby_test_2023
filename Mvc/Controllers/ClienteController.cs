@@ -19,7 +19,7 @@ public class ClienteController : BaseController
     }
 
     [HttpGet("Index")]
-    public async Task<IActionResult> Index([FromQuery] string filter)
+    public IActionResult Index()
     {
         try
         {
@@ -29,9 +29,7 @@ public class ClienteController : BaseController
                 return Redirect("~/Account/Login");
             }
 
-            ViewBag.Filter = filter ?? string.Empty;
-            var clientes = await _clienteService.Get(token, filter);
-            return View(clientes);
+            return View();
         }
         catch (Exception e)
         {
@@ -39,6 +37,29 @@ public class ClienteController : BaseController
             return View();
         }
     }
+
+    [HttpGet("Data")]
+    public async Task<IActionResult> GetData([FromQuery] IDictionary<string, string> search, int draw)
+    {
+        try
+        {
+            var token = GetToken();
+            if (string.IsNullOrWhiteSpace(token))
+            {
+                return Redirect("~/Account/Login");
+            }
+
+            var clientes = await _clienteService.Get(token, search["value"]);
+            clientes.AddDraw(draw);
+            return Ok(clientes);
+        }
+        catch (Exception e)
+        {
+            return StatusCode(500, e.Message);
+        }
+    }
+
+
 
     [HttpPost("Index")]
     public IActionResult IndexFiltered(string filter)
@@ -62,7 +83,7 @@ public class ClienteController : BaseController
                 return View(await _clienteService.GetById(id, token));
             }
 
-            return View(new ClienteViewModel(Guid.Empty, string.Empty, string.Empty, true));
+            return View(new ClienteByIdViewModel(Guid.Empty, string.Empty, string.Empty, true));
         }
         catch (Exception e)
         {
@@ -78,7 +99,7 @@ public class ClienteController : BaseController
         {
             if (!ModelState.IsValid)
             {
-                return View(new ClienteViewModel(
+                return View(new ClienteByIdViewModel(
                     createOrEditClienteViewModel.Id,
                     createOrEditClienteViewModel.Nome,
                     createOrEditClienteViewModel.CpfCnpj,
@@ -111,7 +132,7 @@ public class ClienteController : BaseController
         catch (ArgumentException e)
         {
             _notyf.Warning(e.Message);
-            return View(new ClienteViewModel(
+            return View(new ClienteByIdViewModel(
                 createOrEditClienteViewModel.Id,
                 createOrEditClienteViewModel.Nome,
                 createOrEditClienteViewModel.CpfCnpj,
@@ -120,7 +141,7 @@ public class ClienteController : BaseController
         catch (Exception e)
         {
             _notyf.Error(e.Message);
-            return View(new ClienteViewModel(
+            return View(new ClienteByIdViewModel(
                 createOrEditClienteViewModel.Id,
                 createOrEditClienteViewModel.Nome,
                 createOrEditClienteViewModel.CpfCnpj,

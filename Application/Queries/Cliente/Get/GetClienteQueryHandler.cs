@@ -5,7 +5,7 @@ using SharedKernel.Utils;
 
 namespace Application.Queries.Clientes.Get;
 
-public class GetClienteQueryHandler : IQueryHandler<GetClienteQueryInput, IEnumerable<GetClienteByIdViewModel>>
+public class GetClienteQueryHandler : IQuerySingleHandler<GetClienteQueryInput, GetClienteViewModel>
 {
     private readonly IReadRepository<GetClienteByIdViewModel> _repository;
 
@@ -14,18 +14,21 @@ public class GetClienteQueryHandler : IQueryHandler<GetClienteQueryInput, IEnume
         _repository = repository;
     }
 
-    public async Task<IEnumerable<GetClienteByIdViewModel>> Handle(GetClienteQueryInput request, CancellationToken cancellationToken)
+    public async Task<GetClienteViewModel> Handle(GetClienteQueryInput request, CancellationToken cancellationToken)
     {
         var query = @"select c.Id, c.Nome, c.CpfCnpj, c.Ativo from Cliente c";
 
         IEnumerable<GetClienteByIdViewModel> clientes = await _repository.ExecuteQueryAsync(query);
+        int recordsTotal = clientes.Count();
+
         clientes = !string.IsNullOrWhiteSpace(request.Filter)
             ? BuildFilters(clientes, request.Filter)
             : clientes;
+        int recordsFilterd = clientes.Count();
 
         clientes = Sort(clientes, request.OrderBy, request.OrderAsc);
 
-        return clientes;
+        return new GetClienteViewModel(recordsTotal, recordsFilterd, clientes);
     }
 
     private IEnumerable<GetClienteByIdViewModel> BuildFilters(IEnumerable<GetClienteByIdViewModel> clientes, string filter)
