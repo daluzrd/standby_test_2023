@@ -23,11 +23,11 @@ public class ProdutoController : ControllerBase
     }
 
     [HttpGet()]
-    public async Task<IActionResult> Get([FromQuery] string filter)
+    public async Task<IActionResult> Get([FromQuery] string filter, string orderBy = "id", bool orderAsc = true)
     {
         try
         {
-            var getProdutoQueryInput = new GetProdutoQueryInput(filter);
+            var getProdutoQueryInput = new GetProdutoQueryInput(filter, orderBy, orderAsc);
             var result = await _mediator.SendQuery(getProdutoQueryInput);
 
             return Ok(result);

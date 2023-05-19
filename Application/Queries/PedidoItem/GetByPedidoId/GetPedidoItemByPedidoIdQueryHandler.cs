@@ -1,6 +1,7 @@
 using Application.Queries.Produtos.GetById;
 using SharedKernel.Interfaces;
 using SharedKernel.Queries;
+using SharedKernel.Utils;
 
 namespace Application.Queries.PedidoItems.GetByPedidoId;
 
@@ -43,6 +44,8 @@ public class GetPedidoItemByPedidoIdQueryHandler : IQueryHandler<GetPedidoItemBy
         pedidoItens = !string.IsNullOrWhiteSpace(request.Filter)
             ? BuildFilters(pedidoItens, request.Filter)
             : pedidoItens;
+
+        pedidoItens = Sort(pedidoItens, request.OrderBy, request.OrderAsc);
             
         return pedidoItens;
     }
@@ -55,6 +58,20 @@ public class GetPedidoItemByPedidoIdQueryHandler : IQueryHandler<GetPedidoItemBy
             pi.Quantidade.ToString().Contains(filter) || 
             pi.ValorUnitario.ToString().Contains(filter) || 
             pi.ValorTotal.ToString().Contains(filter));
+
+        return pedidoItens;
+    }
+
+    private IEnumerable<GetPedidoItemByPedidoIdViewModel> Sort(IEnumerable<GetPedidoItemByPedidoIdViewModel> pedidoItens, string orderBy, bool orderAsc)
+    {
+        pedidoItens = orderBy.ToLower() switch
+        {
+            "quantidade" => EnumerableUtils<GetPedidoItemByPedidoIdViewModel>.Sort(pedidoItens, p => p.Quantidade, orderAsc),
+            "valorunitario" => EnumerableUtils<GetPedidoItemByPedidoIdViewModel>.Sort(pedidoItens, p => p.ValorUnitario, orderAsc),
+            "valortotal" => EnumerableUtils<GetPedidoItemByPedidoIdViewModel>.Sort(pedidoItens, p => p.ValorTotal, orderAsc),
+            "produto" => EnumerableUtils<GetPedidoItemByPedidoIdViewModel>.Sort(pedidoItens, p => p.Produto.Descricao, orderAsc),
+            _ => EnumerableUtils<GetPedidoItemByPedidoIdViewModel>.Sort(pedidoItens, p => p.Id, orderAsc)
+        };
 
         return pedidoItens;
     }

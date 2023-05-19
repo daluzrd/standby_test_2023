@@ -33,6 +33,8 @@ public class GetPedidoQueryHandler : IQueryHandler<GetPedidoQueryInput, IEnumera
             BuildFilters(pedidos, request.Filter)
             : pedidos;
 
+        pedidos = Sort(pedidos, request.OrderBy, request.OrderAsc);
+
         return pedidos;
     }
 
@@ -44,6 +46,21 @@ public class GetPedidoQueryHandler : IQueryHandler<GetPedidoQueryInput, IEnumera
             p.Valor.ToString().Contains(filter) ||
             DateTimeUtils.GetBrazilianDateString(p.Data).Contains(filter) || 
             DateTimeUtils.GetBrazilianDateString(p.DataAtualizacao).Contains(filter));
+
+        return pedidos;
+    }
+
+    private IEnumerable<GetPedidoViewModel> Sort(IEnumerable<GetPedidoViewModel> pedidos, string orderBy, bool orderAsc)
+    {
+        pedidos = orderBy.ToLower() switch
+        {
+            "data" => EnumerableUtils<GetPedidoViewModel>.Sort(pedidos, p => p.Data, orderAsc),
+            "status" => EnumerableUtils<GetPedidoViewModel>.Sort(pedidos, p => p.Status, orderAsc),
+            "valor" => EnumerableUtils<GetPedidoViewModel>.Sort(pedidos, p => p.Valor, orderAsc),
+            "dataatualizacao" => EnumerableUtils<GetPedidoViewModel>.Sort(pedidos, p => p.DataAtualizacao, orderAsc),
+            "nome" => EnumerableUtils<GetPedidoViewModel>.Sort(pedidos, p => p.NomeCliente, orderAsc),
+            _ => EnumerableUtils<GetPedidoViewModel>.Sort(pedidos, p => p.Id, orderAsc)
+        };
 
         return pedidos;
     }

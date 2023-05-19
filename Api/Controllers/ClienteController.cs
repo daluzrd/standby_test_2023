@@ -22,11 +22,11 @@ public class ClienteController : ControllerBase
     }
 
     [HttpGet()]
-    public async Task<IActionResult> Get([FromQuery] string filter)
+    public async Task<IActionResult> Get([FromQuery] string filter, string orderBy = "id", bool orderAsc = true)
     {
         try
         {
-            var getClienteQueryInput = new GetClienteQueryInput(filter);
+            var getClienteQueryInput = new GetClienteQueryInput(filter, orderBy, orderAsc);
             var result = await _mediator.SendQuery(getClienteQueryInput);
 
             return Ok(result);
