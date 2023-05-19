@@ -16,29 +16,21 @@ public class GetProdutoQueryHandler : IQueryHandler<GetProdutoQueryInput, IEnume
     public async Task<IEnumerable<GetProdutoByIdViewModel>> Handle(GetProdutoQueryInput request, CancellationToken cancellationToken)
     {
         var query = @"select p.Id, p.Codigo, p.Descricao, p.QuantidadeEstoque, p.Valor from Produto p";
-        var textVariables = new List<string> { "p.Codigo", "p.Descricao" };
-        List<string>? numberVariables = null;
+        
+        IEnumerable<GetProdutoByIdViewModel> produtos = await _repository.ExecuteQueryAsync(query);
+        produtos = !string.IsNullOrWhiteSpace(request.Filter) ? BuildFilters(produtos, request.Filter) : produtos;
 
-        var filterIsNumber = false;
-        if (decimal.TryParse(request.Filter, out decimal numberFilter))
-        {
-            filterIsNumber = true;
-            numberVariables = new List<string> { "p.QuantidadeEstoque", "p.Valor" };
-        }
+        return produtos;
+    }
 
-        if (request.Filter != null)
-        {
-            query = _repository.BuildQueryFilters(query + " where ", textVariables: textVariables, numberVariables: numberVariables);
-        }
+    private IEnumerable<GetProdutoByIdViewModel> BuildFilters(IEnumerable<GetProdutoByIdViewModel> produtos, string filter)
+    {
+        filter = filter.ToLower();
+        produtos = produtos.Where(
+            p => p.Codigo.ToLower().Contains(filter) || 
+            p.Descricao.ToLower().Contains(filter) || 
+            p.Valor.ToString().Contains(filter));
 
-        var textFilter = $"%{request.Filter}%";
-
-        return await _repository.ExecuteQueryAsync(
-            query,
-            request.Filter != null
-            ? filterIsNumber
-                ? new { filter = textFilter, numberFilter = request.Filter }
-                : new { filter = textFilter }
-            : null);
+        return produtos;
     }
 }

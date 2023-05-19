@@ -30,23 +30,8 @@ public class GetPedidoItemByPedidoIdQueryHandler : IQueryHandler<GetPedidoItemBy
             inner join Produto p
             on pi.ProdutoId = p.Id
             where pi.PedidoId = @pedidoId";
-        var textVariables = new List<string> { "p.Descricao" };
-        List<string>? numberVariables = null;
 
-        var filterIsNumber = false;
-        if (decimal.TryParse(request.Filter, out decimal numberFilter))
-        {
-            filterIsNumber = true;
-            numberVariables = new List<string> { "pi.Quantidade", "pi.ValorUnitario", "pi.ValorTotal" };
-        }
-
-        if (request.Filter != null)
-        {
-            query = _repository.BuildQueryFilters(query + " and (", textVariables: textVariables, numberVariables: numberVariables) + ")";
-        }
-
-        var textFilter = $"%{request.Filter}%";
-        return await _repository.ExecuteQueryAsync<GetPedidoItemByPedidoIdViewModel, GetProdutoByIdViewModel, GetPedidoItemByPedidoIdViewModel>(
+        IEnumerable<GetPedidoItemByPedidoIdViewModel> pedidoItens = await _repository.ExecuteQueryAsync<GetPedidoItemByPedidoIdViewModel, GetProdutoByIdViewModel, GetPedidoItemByPedidoIdViewModel>(
             query,
             (pedidoItem, produto) =>
             {
@@ -54,11 +39,23 @@ public class GetPedidoItemByPedidoIdQueryHandler : IQueryHandler<GetPedidoItemBy
                 return pedidoItem;
             },
             "ValorTotal,Id",
-            request.Filter != null
-                ? filterIsNumber
-                    ? new { filter = textFilter, numberFilter = numberFilter, pedidoId = request.PedidoId }
-                    : new { filter = textFilter, pedidoId = request.PedidoId }
-                : new { pedidoId = request.PedidoId }
-        );
+            new { pedidoId = request.PedidoId});            
+        pedidoItens = !string.IsNullOrWhiteSpace(request.Filter)
+            ? BuildFilters(pedidoItens, request.Filter)
+            : pedidoItens;
+            
+        return pedidoItens;
+    }
+
+    private IEnumerable<GetPedidoItemByPedidoIdViewModel> BuildFilters(IEnumerable<GetPedidoItemByPedidoIdViewModel> pedidoItens, string filter)
+    {
+        filter = filter.ToLower();
+        pedidoItens = pedidoItens.Where(
+            pi => pi.Produto.Descricao.ToLower().Contains(filter) || 
+            pi.Quantidade.ToString().Contains(filter) || 
+            pi.ValorUnitario.ToString().Contains(filter) || 
+            pi.ValorTotal.ToString().Contains(filter));
+
+        return pedidoItens;
     }
 }

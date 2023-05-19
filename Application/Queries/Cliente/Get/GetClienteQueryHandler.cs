@@ -18,16 +18,19 @@ public class GetClienteQueryHandler : IQueryHandler<GetClienteQueryInput, IEnume
         var query = @"select c.Id, c.Nome, c.CpfCnpj, c.Ativo from Cliente c";
         var textVariables = new List<string> { "c.Nome", "c.CpfCnpj" };
 
-        if (request.Filter != null)
-        {
-            query = _repository.BuildQueryFilters(query + " where ", textVariables);
-        }
-        
-        var textFilter = $"%{request.Filter}%";
-        return await _repository.ExecuteQueryAsync(
-            query,
-            request.Filter != null
-            ? new { filter = textFilter }
-            : null);
+        IEnumerable<GetClienteByIdViewModel> clientes = await _repository.ExecuteQueryAsync(query);
+        clientes = !string.IsNullOrWhiteSpace(request.Filter)
+            ? BuildFilters(clientes, request.Filter)
+            : clientes;
+
+        return clientes;
+    }
+
+    private IEnumerable<GetClienteByIdViewModel> BuildFilters(IEnumerable<GetClienteByIdViewModel> clientes, string filter)
+    {
+        filter = filter.ToLower();
+        clientes = clientes.Where(c => c.Nome.ToLower().Contains(filter) || c.CpfCnpj.ToLower().Contains(filter));
+
+        return clientes;
     }
 }
