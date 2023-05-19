@@ -55,32 +55,19 @@ public class Pedido : IAggregateRoot
         Valor += produto.Valor * quantidade;
     }
 
-    public void UpdatePedidoItemQuantidade(int quantidade)
+    public void UpdatePedidoItemQuantidade()
     {
-        bool wasAdded = false;
+        Valor = 0;
         foreach (var item in _pedidoItens)
         {
-            if (wasAdded) 
-            {
-                Valor += item.ValorTotal;
-            }
-            else
-            {
-                Valor = item.ValorTotal;
-            }
+            Valor += item.ValorTotal;
         }
     }
 
     public void DeletePedidoItem(PedidoItem pedidoItem)
     {
+        Valor -= pedidoItem.ValorTotal;
         _pedidoItens.Remove(pedidoItem);
-    }
-
-    public void RemovePedidoItem(PedidoItem pedidoItem)
-    {
-        _pedidoItens.Remove(pedidoItem);
-        
-        Valor -= pedidoItem.ValorUnitario * pedidoItem.Quantidade;
     }
 
     public void UpdateCliente(Cliente cliente)

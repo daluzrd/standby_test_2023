@@ -40,7 +40,7 @@ public class UpdatePedidoItemQuantidadeCommandHandler : ICommandHandler<UpdatePe
         }
 
         pedidoItem.ChangePedidoQuantity(command.Quantidade);
-        pedido.UpdatePedidoItemQuantidade(command.Quantidade);
+        pedido.UpdatePedidoItemQuantidade();
 
         var result = await _pedidoRepository.Commit(cancellationToken);
         if (!result)
